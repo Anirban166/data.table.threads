@@ -1,5 +1,4 @@
 library(ggplot2)
-library(gridExtra)
 library(data.table)
 library(microbenchmark)
 
@@ -43,22 +42,20 @@ find_optimal_threads <- function(rowCount, colCount) {
   return(do.call(rbind, results))
 }
 
-benchmarkData <- find_optimal_threads(1000, 10)
+benchmarkData <- find_optimal_threads(10000000, 10)
 
 rownames(benchmarkData) <- NULL
 benchmarkData$speedup <- benchmarkData$meanTime[benchmarkData$threadCount == 1] / benchmarkData$meanTime
 
 idealSpeedup <- seq(1, getDTthreads())
+setDT(benchmarkData)
+maxSpeedup <- benchmarkData[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
 
-plots <- lapply(unique(benchmarkData$expr), function(func) {
-  data <- benchmarkData[benchmarkData$expr == func, ]
-  ggplot(data, aes(x = threadCount, y = speedup)) +
-    geom_line() +
-    geom_line(aes(x = idealSpeedup, y = idealSpeedup), linetype = "dashed", color = "red") +
-    labs(title = paste(func), x = "Threads", y = "Speedup") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    # To avoid the default numbering that includes 2.5 and 7.5: (half a thread doesn't make sense)
-    scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads())
-})
-
-grid.arrange(grobs = plots)
+ggplot(benchmarkData, aes(x = threadCount, y = speedup, color = expr)) +
+  geom_line() +
+  geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup), linetype = "dashed", color = "red") +
+  geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup), color = "black", size = 2) +
+  facet_grid(. ~ expr, scales = "free_y") +
+  labs(x = "Threads", y = "Speedup", title = "data.table functions") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads())
