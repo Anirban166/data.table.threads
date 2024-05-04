@@ -1,0 +1,20 @@
+Package: data.table.threads
+Title: Analyze multithreading performance for data.table functions
+Version: 0.1.1
+Author: Anirban Chetia <Anirban.Chetia@nau.edu> 
+Description: Assists in finding the optimal thread count for different data.table
+             routines that are parallelizable by providing a function that
+             benchmarks the runtime for operations using each routine across 
+             varying number of threads (based on your system), and then computes
+             the speedup for generating plots that delineate the performance 
+             per function for each thread count and highlight the ones with
+             maximum gain.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+URL: https://github.com/Anirban166/data.table.threads
+Imports: ggplot2,
+         data.table,
+         microbenchmark,
+         testthat (>= 2.1.0)
