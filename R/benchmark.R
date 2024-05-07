@@ -51,11 +51,16 @@ idealSpeedup <- seq(1, getDTthreads())
 setDT(benchmarkData)
 maxSpeedup <- benchmarkData[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
 
-ggplot(benchmarkData, aes(x = threadCount, y = speedup, color = expr)) +
-  geom_line() +
-  geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup), linetype = "dashed", color = "red") +
+maxSpeedupThreads <- benchmarkData[maxSpeedup$threadCount == threadCount, .(threadCount, expr)]
+
+ggplot(benchmarkData, aes(x = threadCount, y = speedup, linetype = "Legend")) +
+  geom_line(aes(color = expr, linetype = "Measured Speedup")) +
+  geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup, linetype = "Ideal Speedup"), color = "red") +
   geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup), color = "black", size = 2) +
-  facet_grid(. ~ expr, scales = "free_y") +
-  labs(x = "Threads", y = "Speedup", title = "data.table functions") +
+  geom_text(data = maxSpeedup, aes(label = maxSpeedup$threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
+  facet_wrap(~expr, scales = "free_y") +
+  labs(x = "Threads", y = "Speedup", title = "data.table functions", linetype = "Legend") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads())
+  scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
+  scale_color_manual(values = c("Speedup" = "black"), guide = "none") + # Removing the legend for expr.
+  scale_linetype_manual(values = c("Measured Speedup" = "solid", "Ideal Speedup" = "dashed"), guide = "legend")
