@@ -1,12 +1,12 @@
-#' Function to make speedup plots for the benchmarked data.table functions
+#' Function to make speedup plots for the benchmarked \code{data.table} functions
 #'
-#' @param x A data frame containing benchmarked timings and thread counts.
+#' @param x A \code{data.frame} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
-#' @param ... Additional arguments (not used in this function but included for consistency with the S3 generic plot function).
+#' @param ... Additional arguments (not used in this function but included for consistency with the S3 generic \code{plot} function).
 #'
-#' @return A ggplot object containing a speedup plot for each benchmarked data.table function.
+#' @return A \code{ggplot} object containing a speedup plot for each benchmarked \code{data.table} function.
 #'
-#' @details Creates a comprehensive ggplot showing the ideal, sub-optimal, and measured speedup trends for the data.table functions benchmarked with varying thread counts.
+#' @details Creates a comprehensive \code{ggplot} showing the ideal, sub-optimal, and measured speedup trends for the \code{data.table} functions benchmarked with varying thread counts.
 #'
 #' @export
 #'

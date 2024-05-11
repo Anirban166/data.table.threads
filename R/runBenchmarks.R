@@ -1,14 +1,14 @@
-#' Function to run a set of predefined benchmarks for different data.table functions with varying thread counts
+#' Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts
 #'
-#' @param rowCount The number of rows in the data.table
+#' @param rowCount The number of rows in the \code{data.table}.
 #'
-#' @param colCount The number of columns in the data.table
+#' @param colCount The number of columns in the \code{data.table}.
 #'
 #' @param threadCount The total number of threads to use.
 #'
-#' @return A data frame containing benchmarked timings for each data.table function with different thread counts.
+#' @return A \code{data.frame} containing benchmarked timings for each \code{data.table} function with different thread counts.
 #'
-#' @details Benchmarks various data.table functions that are parallelizable (setorder, GForce_sum, subsetting, frollmean, fcoalesce, between, fifelse, nafill, and CJ) with varying thread counts..
+#' @details Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
 #'
 #' @export
 #'

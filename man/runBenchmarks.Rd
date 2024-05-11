@@ -2,25 +2,25 @@
 % Please edit documentation in R/runBenchmarks.R
 \name{runBenchmarks}
 \alias{runBenchmarks}
-\title{Function to run a set of predefined benchmarks for different data.table functions with varying thread counts}
+\title{Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts}
 \usage{
 runBenchmarks(rowCount, colCount, threadCount)
 }
 \arguments{
-\item{rowCount}{The number of rows in the data.table}
+\item{rowCount}{The number of rows in the \code{data.table}.}
 
-\item{colCount}{The number of columns in the data.table}
+\item{colCount}{The number of columns in the \code{data.table}.}
 
 \item{threadCount}{The total number of threads to use.}
 }
 \value{
-A data frame containing benchmarked timings for each data.table function with different thread counts.
+A \code{data.frame} containing benchmarked timings for each \code{data.table} function with different thread counts.
 }
 \description{
-Function to run a set of predefined benchmarks for different data.table functions with varying thread counts
+Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts
 }
 \details{
-Benchmarks various data.table functions that are parallelizable (setorder, GForce_sum, subsetting, frollmean, fcoalesce, between, fifelse, nafill, and CJ) with varying thread counts..
+Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
 }
 \examples{
 \dontrun{

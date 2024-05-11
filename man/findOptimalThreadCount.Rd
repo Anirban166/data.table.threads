@@ -2,23 +2,23 @@
 % Please edit documentation in R/findOptimalThreadCount.R
 \name{findOptimalThreadCount}
 \alias{findOptimalThreadCount}
-\title{Function that finds the optimal (fastest) thread count for different data.table functions}
+\title{Function that finds the optimal (fastest) thread count for different \code{data.table} functions}
 \usage{
 findOptimalThreadCount(rowCount, colCount)
 }
 \arguments{
-\item{rowCount}{The number of rows in the data table.}
+\item{rowCount}{The number of rows in the \code{data.table}.}
 
-\item{colCount}{The number of columns in the data table.}
+\item{colCount}{The number of columns in the \code{data.table}.}
 }
 \value{
-A data frame containing the optimal thread count for each data.table function.
+A \code{data.frame} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 }
 \description{
-This function finds the optimal thread count for running data.table functions with maximum efficiency.
+This function finds the optimal thread count for running \code{data.table} functions with maximum efficiency.
 }
 \details{
-Iteratively runs benchmarks with increasing thread counts and determines the optimal number of threads for each data.table function.
+Iteratively runs benchmarks with increasing thread counts and determines the optimal number of threads for each \code{data.table} function.
 }
 \examples{
 \dontrun{

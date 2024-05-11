@@ -2,23 +2,23 @@
 % Please edit documentation in R/plot.data_table_threads_benchmark.R
 \name{plot.data_table_threads_benchmark}
 \alias{plot.data_table_threads_benchmark}
-\title{Function to make speedup plots for the benchmarked data.table functions}
+\title{Function to make speedup plots for the benchmarked \code{data.table} functions}
 \usage{
 \method{plot}{data_table_threads_benchmark}(x, ...)
 }
 \arguments{
-\item{x}{A data frame containing benchmarked timings and thread counts.}
+\item{x}{A \code{data.frame} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.}
 
-\item{...}{Additional arguments (not used in this function but included for consistency with the S3 generic plot function).}
+\item{...}{Additional arguments (not used in this function but included for consistency with the S3 generic \code{plot} function).}
 }
 \value{
-A ggplot object containing a speedup plot for each benchmarked data.table function.
+A \code{ggplot} object containing a speedup plot for each benchmarked \code{data.table} function.
 }
 \description{
-Function to make speedup plots for the benchmarked data.table functions
+Function to make speedup plots for the benchmarked \code{data.table} functions
 }
 \details{
-Creates a comprehensive ggplot showing the ideal, sub-optimal, and measured speedup trends for the data.table functions benchmarked with varying thread counts.
+Creates a comprehensive \code{ggplot} showing the ideal, sub-optimal, and measured speedup trends for the \code{data.table} functions benchmarked with varying thread counts.
 }
 \examples{
 \dontrun{
