@@ -35,7 +35,7 @@ plot.data_table_threads_benchmark <- function(x, ...) {
   ggplot(df, aes(x = threadCount, y = speedup, linetype = "Legend")) +
     geom_line(aes(color = expr, linetype = "Measured Speedup")) +
     geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup, linetype = "Ideal Speedup"), color = "red") +
-    geom_line(data = data.frame(x = c(1, getDTthreads()), y = c(1, getDTthreads()/2)), aes(x, y, linetype = "Sub-optimal Speedup"), color = "blue") +
+    geom_line(data = data.frame(x = seq(1, getDTthreads(), length.out = getDTthreads()), y = seq(1, getDTthreads()/2, length.out = getDTthreads())), aes(x, y, linetype = "Sub-optimal Speedup"), color = "blue") +
     geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup), color = "black", size = 2) +
     geom_text(data = maxSpeedup, aes(label = maxSpeedup$threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
     geom_ribbon(aes(ymin = speedup - 0.3, ymax = speedup + 0.3), alpha = 0.5) +
