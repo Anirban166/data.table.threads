@@ -31,7 +31,8 @@ plot.data_table_threads_benchmark <- function(x, ...) {
   setDT(df)
   maxSpeedup <- df[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
   subOptimalSpeedup <- data.frame(x = seq(1, getDTthreads(), length.out = getDTthreads()), y = seq(1, getDTthreads()/2, length.out = getDTthreads()))
-  intersection <- df[, .SD[which.min(abs(speedup - subOptimalSpeedup$y))], by = expr]
+  intersection <- df[, .SD[which.max(speedup)], by = expr]
+  intersection <- intersection[abs(which.max(intersection$speedup)), ]
 
   ggplot(df, aes(x = threadCount, y = speedup, linetype = "Legend")) +
     geom_line(aes(color = expr, linetype = "Measured Speedup")) +
