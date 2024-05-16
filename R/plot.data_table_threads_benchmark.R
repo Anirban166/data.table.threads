@@ -30,7 +30,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
   idealSpeedup <- seq(1, getDTthreads())
   setDT(df)
   maxSpeedup <- df[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
-  subOptimalSpeedup <- data.frame(x = seq(1, getDTthreads(), length.out = getDTthreads()), y = seq(1, getDTthreads()/2, length.out = getDTthreads()))
+  subOptimalSpeedup <- data.frame(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
 
   closestPoints <- data.frame()
   for(i in unique(df$expr))
@@ -44,7 +44,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
   ggplot(df, aes(x = threadCount, y = speedup, linetype = "Legend")) +
     geom_line(aes(color = expr, linetype = "Measured")) +
     geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "red") +
-    geom_line(data = subOptimalSpeedup, aes(x, y, linetype = "Sub-optimal"), color = "blue") +
+    geom_line(data = subOptimalSpeedup, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "blue") +
     geom_point(data = closestPoints, aes(x = threadCount, y = speedup, shape = "Recommended"), color = "black", size = 2) +
     geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup, shape = "Best performing"), color = "red", size = 2) +
     geom_text(data = closestPoints, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
