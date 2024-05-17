@@ -25,7 +25,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 {
   df <- x
   rownames(df) <- NULL
-  df$speedup <- df$meanTime[df$threadCount == 1] / df$meanTime
+  df$speedup <- df$medianTime[df$threadCount == 1] / df$medianTime
 
   setDT(df)
   maxSpeedup <- df[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]

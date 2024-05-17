@@ -6,7 +6,7 @@
 #'
 #' @return NULL.
 #'
-#' @details Prints a table enlisting the best performing thread count along with the runtime (mean value) for each benchmarked \code{data.table} function.
+#' @details Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked \code{data.table} function.
 #'
 #' @export
 #'
@@ -20,17 +20,17 @@
 
 print.data_table_threads_benchmark <- function(x, ...)
 {
-  df <- data.frame(expr = x$expr, threadCount = x$threadCount, meanTime = x$meanTime)
+  df <- data.frame(expr = x$expr, threadCount = x$threadCount, meanTime = x$medianTime)
 
-  fastestMeanTime <- aggregate(meanTime ~ expr, data = df, FUN = min)
-  bestPerformingThreadCount <- df[df$expr %in% fastestMeanTime$expr & df$meanTime %in% fastestMeanTime$meanTime, "threadCount"]
-  results <- data.frame(expr = fastestMeanTime$expr, meanTime = fastestMeanTime$meanTime, threadCount = bestPerformingThreadCount)
+  fastestMedianTime <- aggregate(medianTime ~ expr, data = df, FUN = min)
+  bestPerformingThreadCount <- df[df$expr %in% fastestMedianTime$expr & df$medianTime %in% fastestMedianTime$medianTime, "threadCount"]
+  results <- data.frame(expr = fastestMedianTime$expr, medianTime = fastestMedianTime$medianTime, threadCount = bestPerformingThreadCount)
 
-  cat(sprintf("%-20s %-23s %-12s\n", "data.table function", "Fastest runtime (mean)", "Thread count"))
+  cat(sprintf("%-20s %-23s %-12s\n", "data.table function", "Fastest runtime (median)", "Thread count"))
   cat(rep("-", 29), "\n")
 
   for(i in seq_len(nrow(results))) 
   {
-    cat(sprintf("%-20s %-23f %-12d\n", results$expr[i], results$meanTime[i], results$threadCount[i]))
+    cat(sprintf("%-20s %-23f %-12d\n", results$expr[i], results$medianTime[i], results$threadCount[i]))
   }
 }
