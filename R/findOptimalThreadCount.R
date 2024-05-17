@@ -6,7 +6,7 @@
 #'
 #' @param colCount The number of columns in the \code{data.table}.
 #'
-#' @return A \code{data.frame} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
+#' @return A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 #'
 #' @details Iteratively runs benchmarks with increasing thread counts and determines the optimal number of threads for each \code{data.table} function.
 #'
@@ -21,8 +21,8 @@
 #' optimalThreads <- findOptimalThreadCount(1000, 10)
 #' }
 
-findOptimalThreadCount <- function(rowCount, colCount) {
-
+findOptimalThreadCount <- function(rowCount, colCount) 
+{
   setDTthreads(0)
   maxThreads <- getDTthreads()
   results <- list()
@@ -31,7 +31,7 @@ findOptimalThreadCount <- function(rowCount, colCount) {
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount)
   }
 
-  result.list <- do.call(rbind, results)
-  class(result.list) <- "data_table_threads_benchmark"
-  result.list
+  result.dt <- rbindlist(results)
+  class(result.dt) <- "data_table_threads_benchmark"
+  result.dt
 }
