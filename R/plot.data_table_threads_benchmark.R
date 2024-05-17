@@ -21,7 +21,7 @@
 #' plot(benchmarkData)
 #' }
 
-plot.data_table_threads_benchmark <- function(x, ...) 
+plot.data_table_threads_benchmark <- function(x, ...)
 {
   df <- x
   rownames(df) <- NULL
@@ -34,18 +34,17 @@ plot.data_table_threads_benchmark <- function(x, ...)
   subOptimalSpeedupData <- data.frame(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
 
   closestPoints <- data.frame()
-  for(i in unique(df$expr))
-  {
+  for(i in unique(df$expr)) {
     dfSubset <- df[df$expr == i, ]
     suboptimalSubset <- subOptimalSpeedupData[subOptimalSpeedupData$threadCount %in% dfSubset$threadCount, ]
     closestPoint <- dfSubset[which.max(dfSubset$speedup - suboptimalSubset$speedup), ]
     closestPoints <- rbind(closestPoints, closestPoint)
   }
 
-  ggplot(df, aes(x = threadCount, y = speedup, linetype = "Legend")) +
-    geom_line(aes(color = expr, linetype = "Measured")) +
-    geom_line(data = idealSpeedupData, aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "red") +
-    geom_line(data = subOptimalSpeedupData, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "blue") +
+  ggplot(df, aes(x = threadCount, y = speedup)) +
+    geom_line(aes(linetype = "Measured")) +
+    geom_line(data = idealSpeedupData, aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "black") +
+    geom_line(data = subOptimalSpeedupData, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "black") +
     geom_point(data = closestPoints, aes(x = threadCount, y = speedup, shape = "Recommended"), color = "black", size = 2) +
     geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup, shape = "Best performing"), color = "red", size = 2) +
     geom_text(data = closestPoints, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
@@ -56,7 +55,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     labs(x = "Threads", y = "Speedup", title = "data.table functions", linetype = "Legend") +
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
-    scale_color_manual(values = c("Speedup" = "black"), guide = "none") +
     scale_linetype_manual(values = c("Measured" = "solid", "Ideal" = "dashed", "Sub-optimal" = "dotted"), guide = "legend") +
     scale_shape_manual(values = c("Recommended" = 16, "Best performing" = 19)) +
     guides(linetype = guide_legend(override.aes = list(fill = NA), title = "Speedup"), shape = guide_legend(override.aes = list(fill = NA), title = "Thread count"))
