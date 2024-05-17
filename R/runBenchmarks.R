@@ -6,7 +6,7 @@
 #'
 #' @param threadCount The total number of threads to use.
 #'
-#' @return A \code{data.frame} containing benchmarked timings for each \code{data.table} function with different thread counts.
+#' @return A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
 #'
 #' @details Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
 #'
@@ -45,5 +45,5 @@ runBenchmarks <- function(rowCount, colCount, threadCount)
   medianTime <- benchmark_summary$median
   names(medianTime) <- benchmark_summary$expr
 
-  return(data.frame(threadCount = threadCount, expr = names(medianTime), medianTime = medianTime))
+  return(data.table(threadCount = threadCount, expr = names(medianTime), medianTime = medianTime))
 }
