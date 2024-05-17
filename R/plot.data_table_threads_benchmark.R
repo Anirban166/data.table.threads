@@ -27,24 +27,25 @@ plot.data_table_threads_benchmark <- function(x, ...)
   rownames(df) <- NULL
   df$speedup <- df$meanTime[df$threadCount == 1] / df$meanTime
 
-  idealSpeedup <- seq(1, getDTthreads())
   setDT(df)
   maxSpeedup <- df[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
-  subOptimalSpeedup <- data.frame(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
+  idealSpeedup <- seq(1, getDTthreads())
+  idealSpeedupData <- data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
+  subOptimalSpeedupData <- data.frame(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
 
   closestPoints <- data.frame()
   for(i in unique(df$expr))
   {
     dfSubset <- df[df$expr == i, ]
-    suboptimalSubset <- subOptimalSpeedup[subOptimalSpeedup$threadCount %in% dfSubset$threadCount, ]
+    suboptimalSubset <- subOptimalSpeedupData[subOptimalSpeedupData$threadCount %in% dfSubset$threadCount, ]
     closestPoint <- dfSubset[which.max(dfSubset$speedup - suboptimalSubset$speedup), ]
     closestPoints <- rbind(closestPoints, closestPoint)
   }
 
   ggplot(df, aes(x = threadCount, y = speedup, linetype = "Legend")) +
     geom_line(aes(color = expr, linetype = "Measured")) +
-    geom_line(data = data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup), aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "red") +
-    geom_line(data = subOptimalSpeedup, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "blue") +
+    geom_line(data = idealSpeedupData, aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "red") +
+    geom_line(data = subOptimalSpeedupData, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "blue") +
     geom_point(data = closestPoints, aes(x = threadCount, y = speedup, shape = "Recommended"), color = "black", size = 2) +
     geom_point(data = maxSpeedup, aes(x = threadCount, y = speedup, shape = "Best performing"), color = "red", size = 2) +
     geom_text(data = closestPoints, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
