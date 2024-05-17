@@ -36,8 +36,8 @@ plot.data_table_threads_benchmark <- function(x, ...)
   for(i in unique(df$expr))
   {
     dfSubset <- df[df$expr == i, ]
-    suboptimalSubset <- subOptimalSpeedup[subOptimalSpeedup$x %in% dfSubset$threadCount, ]
-    closestPoint <- dfSubset[which.max(dfSubset$speedup - suboptimalSubset$y), ]
+    suboptimalSubset <- subOptimalSpeedup[subOptimalSpeedup$threadCount %in% dfSubset$threadCount, ]
+    closestPoint <- dfSubset[which.max(dfSubset$speedup - suboptimalSubset$speedup), ]
     closestPoints <- rbind(closestPoints, closestPoint)
   }
 
