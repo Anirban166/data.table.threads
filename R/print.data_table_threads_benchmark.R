@@ -1,6 +1,6 @@
-#' Function to concisely display the results returned by \code{runBenchmarks()} in an organized table
+#' Function to concisely display the results returned by \code{findOptimalThreadCount()} in an organized table
 #'
-#' @param x A \code{data.frame} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
+#' @param x A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
 #' @param ... Additional arguments (not used in this function but included for consistency with the S3 generic \code{print} function).
 #'
@@ -20,10 +20,10 @@
 
 print.data_table_threads_benchmark <- function(x, ...)
 {
-  df <- data.frame(expr = x$expr, threadCount = x$threadCount, meanTime = x$medianTime)
+  dt <- data.table(expr = x$expr, threadCount = x$threadCount, medianTime = x$medianTime)
 
-  fastestMedianTime <- aggregate(medianTime ~ expr, data = df, FUN = min)
-  bestPerformingThreadCount <- df[df$expr %in% fastestMedianTime$expr & df$medianTime %in% fastestMedianTime$medianTime, "threadCount"]
+  fastestMedianTime <- aggregate(medianTime ~ expr, data = dt, FUN = min)
+  bestPerformingThreadCount <- dt[dt$expr %in% fastestMedianTime$expr & dt$medianTime %in% fastestMedianTime$medianTime, "threadCount"]
   results <- data.frame(expr = fastestMedianTime$expr, medianTime = fastestMedianTime$medianTime, threadCount = bestPerformingThreadCount)
 
   cat(sprintf("%-20s %-23s %-12s\n", "data.table function", "Fastest runtime (median)", "Thread count"))
