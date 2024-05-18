@@ -23,45 +23,40 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  dt <- as.data.table(x)
-  dt[, speedup := medianTime[threadCount == 1] / medianTime, by = expr]
+  x[, speedup := medianTime[threadCount == 1] / medianTime, by = expr]
+  x[, type := "Measured"]
 
-  maxSpeedup <- dt[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
-  idealSpeedup <- seq(1, getDTthreads())
-  idealSpeedupData <- data.table(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
-  subOptimalSpeedupData <- data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
+  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
 
-  closestPoints <- dt[, {
-    suboptimalSubset <- subOptimalSpeedupData[threadCount %in% .SD$threadCount, on = .(threadCount)]
-    .SD[which.max(speedup - suboptimalSubset$speedup)]
-  }, by = expr]
+  idealSpeedup.list <- lapply(unique(x$expr), function(expr)
+  {
+    data.table(threadCount = 1:getDTthreads(),
+               speedup = seq(1, getDTthreads()),
+               expr = expr, type = "Ideal")
+  })
+  subOptimalSpeedup.list <- lapply(unique(x$expr), function(expr)
+  {
+    data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
+               speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()),
+               expr = expr, type = "Sub-optimal")
+  })
 
-plot.data_table_threads_benchmark <- function(x, ...)
-{
-  dt <- as.data.table(x)
-  dt[, speedup := medianTime[threadCount == 1] / medianTime, by = expr]
+  combinedLineData <- rbindlist(c(idealSpeedup.list, subOptimalSpeedup.list, list(x)), use.names = TRUE, fill = TRUE)
 
-  maxSpeedup <- dt[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
-  idealSpeedup <- seq(1, getDTthreads())
-  idealSpeedupData <- data.table(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
-  subOptimalSpeedupData <- data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
-
-  closestPoints <- dt[, {
-    suboptimalSubset <- subOptimalSpeedupData[threadCount %in% .SD$threadCount, on = .(threadCount)]
-    .SD[which.max(speedup - suboptimalSubset$speedup)]
+  closestPoints <- x[, {
+    suboptimalSpeedupSubset <- subOptimalSpeedup.list[[.GRP]][threadCount %in% .SD$threadCount, on = .(threadCount)]
+    .SD[which.max(speedup - suboptimalSpeedupSubset$speedup)]
   }, by = expr]
 
   closestPoints[, medianTime := NULL]
   closestPoints[, type := "Recommended"]
   maxSpeedup[, type := "Best performing"]
-  combinedData <- rbind(maxSpeedup, closestPoints)
+  combinedPointData <- rbind(maxSpeedup, closestPoints)
 
-  ggplot(dt, aes(x = threadCount, y = speedup)) +
-    geom_line(aes(linetype = "Measured")) +
-    geom_line(data = idealSpeedupData, aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "black") +
-    geom_line(data = subOptimalSpeedupData, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "black") +
-    geom_point(data = combinedData, aes(x = threadCount, y = speedup, shape = type, color = type), size = 2) +
-    geom_text(data = combinedData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
+  ggplot(x, aes(x = threadCount, y = speedup)) +
+    geom_line(data = combinedLineData, aes(x = threadCount, y = speedup, linetype = type), color = "black") +
+    geom_point(data = combinedPointData, aes(x = threadCount, y = speedup, shape = type, color = type), size = 2) +
+    geom_text(data = combinedPointData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
     geom_ribbon(aes(ymin = speedup - 0.3, ymax = speedup + 0.3), alpha = 0.5) +
     facet_wrap(. ~ expr) +
     coord_equal() +
@@ -70,6 +65,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
     scale_linetype_manual(values = c("Measured" = "solid", "Ideal" = "dashed", "Sub-optimal" = "dotted"), guide = "legend") +
     scale_shape_manual(values = c("Recommended" = 16, "Best performing" = 19), guide = "none") +
-    scale_color_manual(values = c("Recommended" = "black", "Best performing" = "red"))+
+    scale_color_manual(values = c("Recommended" = "black", "Best performing" = "red")) +
     guides(linetype = guide_legend(override.aes = list(fill = NA), title = "Speedup"), color = guide_legend(override.aes = list(fill = NA), title = "Thread count"))
 }
