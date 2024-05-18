@@ -31,7 +31,7 @@ findOptimalThreadCount <- function(rowCount, colCount)
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount)
   }
 
-  result.dt <- rbindlist(results)
-  class(result.dt) <- "data_table_threads_benchmark"
-  result.dt
+  results.dt <- rbindlist(results)
+  setattr(results.dt, "class", c("data_table_threads_benchmark", class(results.dt)))
+  results.dt
 }
