@@ -31,15 +31,12 @@ plot.data_table_threads_benchmark <- function(x, ...)
   idealSpeedupData <- data.table(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
   subOptimalSpeedupData <- data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
 
-  closestPoints <- data.frame()
-  for(i in unique(df$expr)) {
-    dfSubset <- df[df$expr == i, ]
-    suboptimalSubset <- subOptimalSpeedupData[subOptimalSpeedupData$threadCount %in% dfSubset$threadCount, ]
-    closestPoint <- dfSubset[which.max(dfSubset$speedup - suboptimalSubset$speedup), ]
-    closestPoints <- rbind(closestPoints, closestPoint)
-  }
+  closestPoints <- dt[, {
+    suboptimalSubset <- subOptimalSpeedupData[threadCount %in% .SD$threadCount, on = .(threadCount)]
+    .SD[which.max(speedup - suboptimalSubset$speedup)]
+  }, by = expr]
 
-  ggplot(df, aes(x = threadCount, y = speedup)) +
+  ggplot(dt, aes(x = threadCount, y = speedup)) +
     geom_line(aes(linetype = "Measured")) +
     geom_line(data = idealSpeedupData, aes(x = threadCount, y = speedup, linetype = "Ideal"), color = "black") +
     geom_line(data = subOptimalSpeedupData, aes(x = threadCount, y = speedup, linetype = "Sub-optimal"), color = "black") +
