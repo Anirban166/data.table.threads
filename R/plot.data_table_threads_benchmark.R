@@ -1,6 +1,6 @@
 #' Function to make speedup plots for the benchmarked \code{data.table} functions
 #'
-#' @param x A \code{data.frame} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
+#' @param x A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
 #' @param ... Additional arguments (not used in this function but included for consistency with the S3 generic \code{plot} function).
 #'
@@ -23,15 +23,13 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  df <- x
-  rownames(df) <- NULL
-  df$speedup <- df$medianTime[df$threadCount == 1] / df$medianTime
+  dt <- as.data.table(x)
+  dt[, speedup := medianTime[threadCount == 1] / medianTime, by = expr]
 
-  setDT(df)
-  maxSpeedup <- df[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
+  maxSpeedup <- dt[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
   idealSpeedup <- seq(1, getDTthreads())
-  idealSpeedupData <- data.frame(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
-  subOptimalSpeedupData <- data.frame(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
+  idealSpeedupData <- data.table(threadCount = 1:getDTthreads(), speedup = idealSpeedup)
+  subOptimalSpeedupData <- data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()), speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()))
 
   closestPoints <- data.frame()
   for(i in unique(df$expr)) {
