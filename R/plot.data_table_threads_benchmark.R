@@ -28,26 +28,24 @@ plot.data_table_threads_benchmark <- function(x, ...)
     type = "Measured"
   ), by = expr]
 
-  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup)), by = expr]
+  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], 
+                      speedup = max(speedup)), by = expr]
 
-  idealSpeedup.list <- lapply(unique(x$expr), function(expr)
-  {
-    data.table(threadCount = 1:getDTthreads(),
-               speedup = seq(1, getDTthreads()),
-               expr = expr, type = "Ideal")
-  })
-  subOptimalSpeedup.list <- lapply(unique(x$expr), function(expr)
-  {
-    data.table(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
-               speedup = seq(1, getDTthreads()/2, length.out = getDTthreads()),
-               expr = expr, type = "Sub-optimal")
-  })
+  idealSpeedup <- x[, .(threadCount = 1:getDTthreads(),
+                        speedup = seq(1, getDTthreads()),
+                        type = "Ideal",
+                        medianTime = NA), by = expr]
 
-  combinedLineData <- rbindlist(c(idealSpeedup.list, subOptimalSpeedup.list, list(x)), use.names = TRUE, fill = TRUE)
+  subOptimalSpeedup <- x[, .(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
+                             speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
+                             type = "Sub-optimal",
+                             medianTime = NA), by = expr]
+
+  combinedLineData <- rbindlist(list(idealSpeedup, subOptimalSpeedup, x), use.names = TRUE, fill = TRUE)
 
   closestPoints <- x[, {
-    suboptimalSpeedupSubset <- subOptimalSpeedup.list[[.BY$expr]]
-    x[.(threadCount = suboptimalSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
+    suboptimalSpeedupSubset <- subOptimalSpeedup[expr == .BY$expr]
+    .SD[.(threadCount = suboptimalSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
     .SD[which.max(speedup - suboptimalSpeedupSubset$speedup)]
   }, by = expr]
 
