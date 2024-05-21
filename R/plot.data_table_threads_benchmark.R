@@ -58,11 +58,16 @@ plot.data_table_threads_benchmark <- function(x, ...)
   maxSpeedup[, type := "Best performing"]
   combinedPointData <- rbind(maxSpeedup, closestPoints)
 
+  x[, `:=`(
+    minSpeedup = min(speedup),
+    maxSpeedup = max(speedup)
+  ), by = expr]
+
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = combinedLineData, aes(x = threadCount, y = speedup, linetype = type), color = "black") +
     geom_point(data = combinedPointData, aes(x = threadCount, y = speedup, shape = type, color = type), size = 2) +
     geom_text(data = combinedPointData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
-    geom_ribbon(aes(ymin = speedup - 0.3, ymax = speedup + 0.3), alpha = 0.5) +
+    geom_ribbon(aes(ymin = minSpeedup, ymax = maxSpeedup), alpha = 0.5) +
     facet_wrap(. ~ expr) +
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions", linetype = "Legend") +
