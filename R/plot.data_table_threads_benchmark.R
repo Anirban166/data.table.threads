@@ -24,7 +24,7 @@
 plot.data_table_threads_benchmark <- function(x, ...)
 {
   x[, `:=`(
-    speedup = medianTime[threadCount == 1] / medianTime, 
+    speedup = medianTime[threadCount == 1] / medianTime,
     type = "Measured"
   ), by = expr]
 
@@ -46,7 +46,8 @@ plot.data_table_threads_benchmark <- function(x, ...)
   combinedLineData <- rbindlist(c(idealSpeedup.list, subOptimalSpeedup.list, list(x)), use.names = TRUE, fill = TRUE)
 
   closestPoints <- x[, {
-    suboptimalSpeedupSubset <- subOptimalSpeedup.list[[.GRP]][threadCount %in% .SD$threadCount, on = .(threadCount)]
+    suboptimalSpeedupSubset <- subOptimalSpeedup.list[[.BY$expr]]
+    x[.(threadCount = suboptimalSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
     .SD[which.max(speedup - suboptimalSpeedupSubset$speedup)]
   }, by = expr]
 
