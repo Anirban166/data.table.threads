@@ -62,17 +62,15 @@ plot.data_table_threads_benchmark <- function(x, ...)
   ), by = expr]
 
   ggplot(x, aes(x = threadCount, y = speedup)) +
-    geom_line(data = combinedLineData, aes(x = threadCount, y = speedup, linetype = type), color = "black") +
-    geom_point(data = combinedPointData, aes(x = threadCount, y = speedup, shape = type, color = type), size = 2) +
+    geom_line(data = combinedLineData, aes(color = type), size = 1) +
+    geom_point(data = combinedPointData, aes(color = type), size = 3) +
     geom_text(data = combinedPointData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
     geom_ribbon(aes(ymin = minSpeedup, ymax = maxSpeedup), alpha = 0.5) +
     facet_wrap(. ~ expr) +
     coord_equal() +
-    labs(x = "Threads", y = "Speedup", title = "data.table functions", linetype = "Legend") +
+    labs(x = "Threads", y = "Speedup", title = "data.table functions") +
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
-    scale_linetype_manual(values = c("Measured" = "solid", "Ideal" = "dashed", "Sub-optimal" = "dotted"), guide = "legend") +
-    scale_shape_manual(values = c("Recommended" = 16, "Best performing" = 19), guide = "none") +
-    scale_color_manual(values = c("Recommended" = "black", "Best performing" = "red")) +
-    guides(linetype = guide_legend(override.aes = list(fill = NA), title = "Speedup"), color = guide_legend(override.aes = list(fill = NA), title = "Thread count"))
+    scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Sub-optimal" = "#93c4e0", "Recommended" = "#93c4e0", "Best performing" = "#f79494")) +
+    guides(color = guide_legend(override.aes = list(fill = NA), title = "Type"))
 }
