@@ -20,7 +20,7 @@
 #' @examples
 #' \dontrun{
 #' # Finding the best performing thread count for each benchmarked data.table function with a data size of 1000 rows and 10 columns:
-#' optimalThreads <- findOptimalThreadCount(1000, 10)
+#' optimalThreads <- data.table.threads::findOptimalThreadCount(1000, 10)
 #' }
 
 findOptimalThreadCount <- function(rowCount, colCount, iterations) 

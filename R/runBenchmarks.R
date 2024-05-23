@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' # Running a set of benchmarks for a data.table with 1000 rows and 10 columns, for thread counts going from 1 to the maximum number of available threads in the user's system:
-#' benchmarkData <- runBenchmarks(1000, 10, getDTthreads())
+#' benchmarkData <- data.table.threads::runBenchmarks(1000, 10, getDTthreads())
 #' }
 
 runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10)
