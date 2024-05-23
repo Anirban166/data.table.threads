@@ -4,15 +4,17 @@
 \alias{findOptimalThreadCount}
 \title{Function that finds the optimal (fastest) thread count for different \code{data.table} functions}
 \usage{
-findOptimalThreadCount(rowCount, colCount)
+findOptimalThreadCount(rowCount, colCount, iterations = 10)
 }
 \arguments{
 \item{rowCount}{The number of rows in the \code{data.table}.}
 
 \item{colCount}{The number of columns in the \code{data.table}.}
+
+\item{iterations}{The number of times the benchmarks are to be run.}
 }
 \value{
-A \code{data.frame} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
+A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 }
 \description{
 This function finds the optimal thread count for running \code{data.table} functions with maximum efficiency.
@@ -23,6 +25,6 @@ Iteratively runs benchmarks with increasing thread counts and determines the opt
 \examples{
 \dontrun{
 # Finding the best performing thread count for each benchmarked data.table function with a data size of 1000 rows and 10 columns:
-optimalThreads <- findOptimalThreadCount(1000, 10)
+optimalThreads <- data.table.threads::findOptimalThreadCount(1000, 10)
 }
 }

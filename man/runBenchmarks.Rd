@@ -4,7 +4,7 @@
 \alias{runBenchmarks}
 \title{Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts}
 \usage{
-runBenchmarks(rowCount, colCount, threadCount)
+runBenchmarks(rowCount, colCount, threadCount, iterations = 10)
 }
 \arguments{
 \item{rowCount}{The number of rows in the \code{data.table}.}
@@ -12,9 +12,11 @@ runBenchmarks(rowCount, colCount, threadCount)
 \item{colCount}{The number of columns in the \code{data.table}.}
 
 \item{threadCount}{The total number of threads to use.}
+
+\item{iterations}{The number of times the benchmarks are to be run.}
 }
 \value{
-A \code{data.frame} containing benchmarked timings for each \code{data.table} function with different thread counts.
+A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
 }
 \description{
 Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts
@@ -25,6 +27,6 @@ Benchmarks various \code{data.table} functions that are parallelizable (\code{se
 \examples{
 \dontrun{
 # Running a set of benchmarks for a data.table with 1000 rows and 10 columns, for thread counts going from 1 to the maximum number of available threads in the user's system:
-benchmarkData <- runBenchmarks(1000, 10, getDTthreads())
+benchmarkData <- data.table.threads::runBenchmarks(1000, 10, getDTthreads())
 }
 }

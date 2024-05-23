@@ -7,7 +7,7 @@
 \method{plot}{data_table_threads_benchmark}(x, ...)
 }
 \arguments{
-\item{x}{A \code{data.frame} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.}
+\item{x}{A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.}
 
 \item{...}{Additional arguments (not used in this function but included for consistency with the S3 generic \code{plot} function).}
 }
@@ -23,8 +23,8 @@ Creates a comprehensive \code{ggplot} showing the ideal, sub-optimal, and measur
 \examples{
 \dontrun{
 # Finding the best performing thread count for each benchmarked data.table function with a data size of 1000 rows and 10 columns:
-benchmarkData <- findOptimalThreadCount(1000, 10)
+benchmarkData <- data.table.threads::findOptimalThreadCount(1000, 10)
 # Generating speedup plots based on the data collected above:
-plot.data_table_threads_benchmark(benchmarkData)
+plot(benchmarkData)
 }
 }
