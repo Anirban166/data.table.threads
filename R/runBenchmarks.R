@@ -6,7 +6,7 @@
 #'
 #' @param threadCount The total number of threads to use.
 #'
-#' @param iterations The number of times the benchmarks are to be run.
+#' @param times The number of times the benchmarks are to be run.
 #'
 #' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
@@ -23,7 +23,7 @@
 #' benchmarkData <- data.table.threads::runBenchmarks(1000, 10, getDTthreads())
 #' }
 
-runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10, verbose = TRUE)
+runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose = TRUE)
 {
   setDTthreads(threadCount)
   dt <- data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
@@ -44,7 +44,7 @@ runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10, verb
     fifelse = fifelse(dt[[1]] > 0.5, dt[[1]], 0),
     nafill = nafill(dt[[1]], type = "const", fill = 0),
     CJ = CJ(sample(rowCount, size = min(rowCount, 5)), sample(colCount, size = min(colCount, 5))),
-    times = iterations)
+    times = times)
 
   benchmarkSummary <- summary(benchmarks)
   medianTime <- benchmarkSummary$median
