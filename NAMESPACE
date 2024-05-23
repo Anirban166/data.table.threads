@@ -3,7 +3,6 @@
 S3method(plot,data_table_threads_benchmark)
 S3method(print,data_table_threads_benchmark)
 export(findOptimalThreadCount)
-export(runBenchmarks)
 import(data.table)
 import(ggplot2)
 import(microbenchmark)

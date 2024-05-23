@@ -10,8 +10,6 @@
 #'
 #' @details Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
 #'
-#' @export
-#'
 #' @import data.table
 #' @import microbenchmark
 #'
