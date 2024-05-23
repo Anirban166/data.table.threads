@@ -48,7 +48,9 @@ runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose =
 
   benchmarkSummary <- summary(benchmarks)
   medianTime <- benchmarkSummary$median
+  minTime <- benchmarkSummary$min
+  maxTime <- benchmarkSummary$max
   exprNames <- benchmarkSummary$expr
 
-  data.table(threadCount = threadCount, expr = exprNames, medianTime = medianTime)
+  data.table(threadCount, summary(benchmarks))
 }
