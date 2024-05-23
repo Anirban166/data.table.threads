@@ -4,7 +4,7 @@
 \alias{findOptimalThreadCount}
 \title{Function that finds the optimal (fastest) thread count for different \code{data.table} functions}
 \usage{
-findOptimalThreadCount(rowCount, colCount, iterations = 10)
+findOptimalThreadCount(rowCount, colCount, iterations = 10, verbose = TRUE)
 }
 \arguments{
 \item{rowCount}{The number of rows in the \code{data.table}.}
@@ -12,6 +12,8 @@ findOptimalThreadCount(rowCount, colCount, iterations = 10)
 \item{colCount}{The number of columns in the \code{data.table}.}
 
 \item{iterations}{The number of times the benchmarks are to be run.}
+
+\item{verbose}{Option (logical) to enable or disable detailed message printing.}
 }
 \value{
 A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.

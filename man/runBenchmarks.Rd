@@ -4,7 +4,7 @@
 \alias{runBenchmarks}
 \title{Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts}
 \usage{
-runBenchmarks(rowCount, colCount, threadCount, iterations = 10)
+runBenchmarks(rowCount, colCount, threadCount, iterations = 10, verbose = TRUE)
 }
 \arguments{
 \item{rowCount}{The number of rows in the \code{data.table}.}
@@ -14,6 +14,8 @@ runBenchmarks(rowCount, colCount, threadCount, iterations = 10)
 \item{threadCount}{The total number of threads to use.}
 
 \item{iterations}{The number of times the benchmarks are to be run.}
+
+\item{verbose}{Option (logical) to enable or disable detailed message printing.}
 }
 \value{
 A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
