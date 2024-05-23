@@ -5,8 +5,10 @@
 #' @param rowCount The number of rows in the \code{data.table}.
 #'
 #' @param colCount The number of columns in the \code{data.table}.
-#' 
+#'
 #' @param iterations The number of times the benchmarks are to be run.
+#'
+#' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
 #' @return A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 #'
@@ -23,14 +25,14 @@
 #' optimalThreads <- data.table.threads::findOptimalThreadCount(1000, 10)
 #' }
 
-findOptimalThreadCount <- function(rowCount, colCount, iterations = 10)
+findOptimalThreadCount <- function(rowCount, colCount, iterations = 10, verbose = TRUE)
 {
   setDTthreads(0)
   maxThreads <- getDTthreads()
   results <- list()
 
   for (threadCount in 1:maxThreads) {
-    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, iterations)
+    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, iterations, verbose)
   }
 
   results.dt <- rbindlist(results)

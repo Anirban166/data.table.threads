@@ -5,8 +5,10 @@
 #' @param colCount The number of columns in the \code{data.table}.
 #'
 #' @param threadCount The total number of threads to use.
-#' 
+#'
 #' @param iterations The number of times the benchmarks are to be run.
+#'
+#' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
 #' @return A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
 #'
@@ -21,12 +23,16 @@
 #' benchmarkData <- data.table.threads::runBenchmarks(1000, 10, getDTthreads())
 #' }
 
-runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10)
+runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10, verbose = TRUE)
 {
   setDTthreads(threadCount)
   dt <- data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
+
   threadLabel <- ifelse(threadCount == 1, "thread", "threads")
-  cat(sprintf("Running benchmarks with %d %s, %d rows, and %d columns.\n", getDTthreads(), threadLabel, rowCount, colCount))
+  if(verbose)
+  {
+    cat(sprintf("Running benchmarks with %d %s, %d rows, and %d columns.\n", getDTthreads(), threadLabel, rowCount, colCount))
+  }
 
   benchmarks <- microbenchmark(
     forder = setorder(dt, V1),
