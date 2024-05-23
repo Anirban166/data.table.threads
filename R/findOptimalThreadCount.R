@@ -23,7 +23,7 @@
 #' optimalThreads <- data.table.threads::findOptimalThreadCount(1000, 10)
 #' }
 
-findOptimalThreadCount <- function(rowCount, colCount, iterations) 
+findOptimalThreadCount <- function(rowCount, colCount, iterations = 10)
 {
   setDTthreads(0)
   maxThreads <- getDTthreads()
