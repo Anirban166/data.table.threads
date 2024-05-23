@@ -5,6 +5,8 @@
 #' @param colCount The number of columns in the \code{data.table}.
 #'
 #' @param threadCount The total number of threads to use.
+#' 
+#' @param iterations The number of times the benchmarks are to be run.
 #'
 #' @return A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
 #'
@@ -19,7 +21,7 @@
 #' benchmarkData <- runBenchmarks(1000, 10, getDTthreads())
 #' }
 
-runBenchmarks <- function(rowCount, colCount, threadCount)
+runBenchmarks <- function(rowCount, colCount, threadCount, iterations = 10)
 {
   setDTthreads(threadCount)
   dt <- data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
@@ -36,8 +38,7 @@ runBenchmarks <- function(rowCount, colCount, threadCount)
     fifelse = fifelse(dt[[1]] > 0.5, dt[[1]], 0),
     nafill = nafill(dt[[1]], type = "const", fill = 0),
     CJ = CJ(sample(rowCount, size = min(rowCount, 5)), sample(colCount, size = min(colCount, 5))),
-    times = 100
-  )
+    times = iterations)
 
   benchmarkSummary <- summary(benchmarks)
   medianTime <- benchmarkSummary$median
