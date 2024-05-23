@@ -46,11 +46,5 @@ runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose =
     CJ = CJ(sample(rowCount, size = min(rowCount, 5)), sample(colCount, size = min(colCount, 5))),
     times = times)
 
-  benchmarkSummary <- summary(benchmarks)
-  medianTime <- benchmarkSummary$median
-  minTime <- benchmarkSummary$min
-  maxTime <- benchmarkSummary$max
-  exprNames <- benchmarkSummary$expr
-
   data.table(threadCount, summary(benchmarks))
 }
