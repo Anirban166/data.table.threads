@@ -46,9 +46,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
                              medianTime = as.numeric(NA)), by = expr]
 
   cols <- c("threadCount", "speedup", "type", "minTime", "maxTime", "medianTime", "expr")
-  setcolorder(x, cols)
-  setcolorder(idealSpeedup, cols)
-  setcolorder(subOptimalSpeedup, cols)
+  lapply(list(x, idealSpeedup, subOptimalSpeedup), setcolorder, cols)
 
   combinedLineData <- rbindlist(list(idealSpeedup, subOptimalSpeedup, x), use.names = TRUE, fill = TRUE)
 
