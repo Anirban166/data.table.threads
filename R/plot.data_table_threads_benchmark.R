@@ -28,17 +28,21 @@ plot.data_table_threads_benchmark <- function(x, ...)
     type = "Measured"
   ), by = expr]
 
-  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], 
+  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)],
                       speedup = max(speedup)), by = expr]
 
   idealSpeedup <- x[, .(threadCount = 1:getDTthreads(),
                         speedup = seq(1, getDTthreads()),
                         type = "Ideal",
+                        minTime = NA,
+                        maxTime = NA,
                         medianTime = NA), by = expr]
 
   subOptimalSpeedup <- x[, .(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
                              speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
                              type = "Sub-optimal",
+                             minTime = NA,
+                             maxTime = NA,
                              medianTime = NA), by = expr]
 
   combinedLineData <- rbindlist(list(idealSpeedup, subOptimalSpeedup, x), use.names = TRUE, fill = TRUE)
