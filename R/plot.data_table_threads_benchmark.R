@@ -33,7 +33,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
                       minTime = as.numeric(NA),
                       maxTime = as.numeric(NA),
                       medianTime = as.numeric(NA),
-                      type = "Best performing"), by = expr]
+                      type = "Ideal"), by = expr]
 
   idealSpeedup <- x[, .(threadCount = 1:getDTthreads(),
                         speedup = seq(1, getDTthreads()),
@@ -44,7 +44,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   subOptimalSpeedup <- x[, .(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
                              speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
-                             type = "Sub-optimal",
+                             type = "Recommended",
                              minTime = as.numeric(NA),
                              maxTime = as.numeric(NA),
                              medianTime = as.numeric(NA)), by = expr]
@@ -84,6 +84,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
-    scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Sub-optimal" = "#93c4e0")) +
+    scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
     guides(color = guide_legend(title = "Type"))
 }
