@@ -74,7 +74,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
     maxSpeedup = max(speedup)
   ), by = expr]
 
-  legendData <- data.table(threadCount = seq(1, getDTthreads()), speedup = c(1:getDTthreads()), type = c("Measured", "Ideal", "Recommended"), expr = rep(NA, getDTthreads()))
+  legendData <- data.table(threadCount = seq(1, getDTthreads()), speedup = c(1:getDTthreads()), type = c("Measured", "Ideal", "Recommended"))
 
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = combinedLineData, aes(color = type), size = 1, show.legend = FALSE) +
