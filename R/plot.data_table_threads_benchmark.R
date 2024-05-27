@@ -43,15 +43,23 @@ plot.data_table_threads_benchmark <- function(x, ...)
     minTime = NA_real_,
     maxTime = NA_real_,
     medianTime = NA_real_), by = expr]
+ 
+  recommendedSpeedup <- x[, .(
+    threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
+    speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
+    type = "Recommended",
+    minTime = NA_real_,
+    maxTime = NA_real_,
+    medianTime = NA_real_), by = expr]   
 
   cols <- c("threadCount", "speedup", "type", "minTime", "maxTime", "medianTime", "expr")
-  lapply(list(x, idealSpeedup, subOptimalSpeedup, maxSpeedup), setcolorder, cols)
-  combinedLineData <- rbindlist(list(idealSpeedup, subOptimalSpeedup, x), use.names = TRUE, fill = TRUE)
+  lapply(list(x, idealSpeedup, recommendedSpeedup, maxSpeedup), setcolorder, cols)
+  combinedLineData <- rbindlist(list(idealSpeedup, recommendedSpeedup, x), use.names = TRUE, fill = TRUE)
 
   closestPoints <- x[, {
-    suboptimalSpeedupSubset <- subOptimalSpeedup[expr == .BY$expr]
-    .SD[.(threadCount = suboptimalSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
-    .SD[which.max(speedup - suboptimalSpeedupSubset$speedup)]
+    recommendedSpeedupSubset <- recommendedSpeedup[expr == .BY$expr]
+    .SD[.(threadCount = recommendedSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
+    .SD[which.max(speedup - recommendedSpeedupSubset$speedup)]
   }, by = expr]
 
   closestPoints[, `:=`(
