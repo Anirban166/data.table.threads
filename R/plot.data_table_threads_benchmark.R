@@ -28,26 +28,26 @@ plot.data_table_threads_benchmark <- function(x, ...)
     type = "Measured"
   ), by = expr]
 
-  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)],
+maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)],
                       speedup = max(speedup),
-                      minTime = as.numeric(NA),
-                      maxTime = as.numeric(NA),
-                      medianTime = as.numeric(NA),
+                      minTime = NA_real_,
+                      maxTime = NA_real_,
+                      medianTime = NA_real_,
                       type = "Ideal"), by = expr]
 
   idealSpeedup <- x[, .(threadCount = 1:getDTthreads(),
                         speedup = seq(1, getDTthreads()),
                         type = "Ideal",
-                        minTime = as.numeric(NA),
-                        maxTime = as.numeric(NA),
-                        medianTime = as.numeric(NA)), by = expr]
+                        minTime = NA_real_,
+                        maxTime = NA_real_,
+                        medianTime = NA_real_), by = expr]
 
   subOptimalSpeedup <- x[, .(threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
                              speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
                              type = "Recommended",
-                             minTime = as.numeric(NA),
-                             maxTime = as.numeric(NA),
-                             medianTime = as.numeric(NA)), by = expr]
+                             minTime = NA_real_,
+                             maxTime = NA_real_,
+                             medianTime = NA_real_), by = expr]
 
   cols <- c("threadCount", "speedup", "type", "minTime", "maxTime", "medianTime", "expr")
   lapply(list(x, idealSpeedup, subOptimalSpeedup, maxSpeedup), setcolorder, cols)
@@ -60,9 +60,9 @@ plot.data_table_threads_benchmark <- function(x, ...)
   }, by = expr]
 
   closestPoints[, `:=`(
-    minTime = as.numeric(NA),
-    maxTime = as.numeric(NA),
-    medianTime = as.numeric(NA),
+    minTime = NA_real_,
+    maxTime = NA_real_,
+    medianTime = NA_real_,
     type = "Recommended"
   )]
 
