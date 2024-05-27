@@ -31,29 +31,27 @@ plot.data_table_threads_benchmark <- function(x, ...)
   maxSpeedup <- x[, .(
     threadCount = threadCount[which.max(speedup)],
     speedup = max(speedup),
-    minTime = NA_real_,
-    maxTime = NA_real_,
-    medianTime = NA_real_,
     type = "Ideal"), by = expr]
 
   idealSpeedup <- x[, .(
     threadCount = 1:getDTthreads(),
     speedup = seq(1, getDTthreads()),
-    type = "Ideal",
-    minTime = NA_real_,
-    maxTime = NA_real_,
-    medianTime = NA_real_), by = expr]
- 
+    type = "Ideal"), by = expr]
+
   recommendedSpeedup <- x[, .(
     threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
     speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
-    type = "Recommended",
-    minTime = NA_real_,
-    maxTime = NA_real_,
-    medianTime = NA_real_), by = expr]   
+    type = "Recommended"), by = expr]
 
-  cols <- c("threadCount", "speedup", "type", "minTime", "maxTime", "medianTime", "expr")
-  lapply(list(x, idealSpeedup, recommendedSpeedup, maxSpeedup), setcolorder, cols)
+  cols <- c("threadCount", "speedup", "type", "expr")
+  extraColumns <- setdiff(names(x), cols)
+  allColumns <- c(cols, extraColumns)
+  lapply(list(x, idealSpeedup, recommendedSpeedup, maxSpeedup), function(dt)
+  {
+    existingColumns <- intersect(allColumns, names(dt))
+    setcolorder(dt, existingColumns)
+  })
+
   combinedLineData <- rbindlist(list(idealSpeedup, recommendedSpeedup, x), use.names = TRUE, fill = TRUE)
 
   closestPoints <- x[, {
@@ -63,13 +61,9 @@ plot.data_table_threads_benchmark <- function(x, ...)
   }, by = expr]
 
   closestPoints[, `:=`(
-    minTime = NA_real_,
-    maxTime = NA_real_,
-    medianTime = NA_real_,
     type = "Recommended"
   )]
 
-  setcolorder(closestPoints, cols)
   combinedPointData <- rbindlist(list(maxSpeedup, closestPoints), use.names = TRUE, fill = TRUE)
 
   x[, `:=`(
