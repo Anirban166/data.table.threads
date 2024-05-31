@@ -25,11 +25,13 @@ plot.data_table_threads_benchmark <- function(x, ...)
 {
   x[, `:=`(speedup = medianTime[threadCount == 1] / medianTime, type = "Measured"), by = expr]
 
+  systemThreadCount <- getDTthreads()
+
   speedupData <- data.table(expr = unique(x$expr))
   speedupData <- speedupData[, .(
-    threadCount = c(1:getDTthreads(), seq(1, getDTthreads(), length.out = getDTthreads())),
-    speedup = c(seq(1, getDTthreads()), seq(1, getDTthreads() / 2, length.out = getDTthreads())),
-    type = rep(c("Ideal", "Recommended"), each = getDTthreads())
+    threadCount = c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)),
+    speedup = c(seq(1, systemThreadCount), seq(1, systemThreadCount / 2, length.out = systemThreadCount)),
+    type = rep(c("Ideal", "Recommended"), each = systemThreadCount)
   ), by = expr]
 
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
@@ -57,7 +59,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    scale_x_continuous(breaks = 1:getDTthreads(), labels = 1:getDTthreads()) +
+    scale_x_continuous(breaks = 1:systemThreadCount, labels = 1:systemThreadCount) +
     scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
     guides(color = guide_legend(title = "Type"))
 }
