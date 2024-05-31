@@ -25,32 +25,29 @@ plot.data_table_threads_benchmark <- function(x, ...)
 {
   x[, `:=`(speedup = medianTime[threadCount == 1] / medianTime, type = "Measured"), by = expr]
 
-  speedupData <- function(expr, type) 
-  {
-    threadCounts <- if (type == "Ideal") 1:getDTthreads() else seq(1, getDTthreads(), length.out = getDTthreads())
-    speedups <- if (type == "Ideal") seq(1, getDTthreads()) else seq(1, getDTthreads() / 2, length.out = getDTthreads())
-    data.table(expr = expr, threadCount = threadCounts, speedup = speedups, type = type)
-  }
-  
-  functions <- unique(x$expr)
-  idealSpeedup <- rbindlist(lapply(functions, speedupData, type = "Ideal"))
-  recommendedSpeedup <- rbindlist(lapply(functions, speedupData, type = "Recommended"))
+  speedupData <- data.table(expr = unique(x$expr))
+  speedupData <- speedupData[, .(
+    threadCount = c(1:getDTthreads(), seq(1, getDTthreads(), length.out = getDTthreads())),
+    speedup = c(seq(1, getDTthreads()), seq(1, getDTthreads() / 2, length.out = getDTthreads())),
+    type = rep(c("Ideal", "Recommended"), each = getDTthreads())
+  ), by = expr]
+
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
-  
-  combinedLineData <- rbindlist(list(idealSpeedup, recommendedSpeedup, x), use.names = TRUE, fill = TRUE)
-  
+
+  combinedLineData <- rbindlist(list(speedupData, x), use.names = TRUE, fill = TRUE)
+
   closestPoints <- x[, {
-    recommendedSpeedupSubset <- recommendedSpeedup[expr == .BY$expr]
-    .SD[.(threadCount = recommendedSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
-    .SD[which.max(speedup - recommendedSpeedupSubset$speedup)]
+    recommendedSpeedupSubset <- speedupData[expr == .BY$expr & type == "Recommended"]
+    merged <- .SD[recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
+    .SD[which.max(speedup - merged$speedup)]
   }, by = expr]
-  
+
   closestPoints[, `:=`(type = "Recommended")]
-  
+
   combinedPointData <- rbindlist(list(maxSpeedup, closestPoints), use.names = TRUE, fill = TRUE)
-  
-  x[, `:=`(minSpeedup = min(speedup), maxSpeedup = max(speedup)), by = expr]
-  
+
+  x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
+
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = combinedLineData, aes(color = type), size = 1) +
     geom_point(data = combinedPointData, aes(color = type), size = 3) +
