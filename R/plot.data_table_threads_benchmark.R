@@ -23,54 +23,34 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  x[, `:=`(
-    speedup = medianTime[threadCount == 1] / medianTime,
-    type = "Measured"
-  ), by = expr]
+  x[, `:=`(speedup = medianTime[threadCount == 1] / medianTime, type = "Measured"), by = expr]
 
-  maxSpeedup <- x[, .(
-    threadCount = threadCount[which.max(speedup)],
-    speedup = max(speedup),
-    type = "Ideal"), by = expr]
-
-  idealSpeedup <- x[, .(
-    threadCount = 1:getDTthreads(),
-    speedup = seq(1, getDTthreads()),
-    type = "Ideal"), by = expr]
-
-  recommendedSpeedup <- x[, .(
-    threadCount = seq(1, getDTthreads(), length.out = getDTthreads()),
-    speedup = seq(1, getDTthreads() / 2, length.out = getDTthreads()),
-    type = "Recommended"), by = expr]
-
-  cols <- c("threadCount", "speedup", "type", "expr")
-  extraColumns <- setdiff(names(x), cols)
-  allColumns <- c(cols, extraColumns)
-  lapply(list(x, idealSpeedup, recommendedSpeedup, maxSpeedup), function(dt)
+  speedupData <- function(expr, type) 
   {
-    existingColumns <- intersect(allColumns, names(dt))
-    setcolorder(dt, existingColumns)
-  })
-
+    threadCounts <- if (type == "Ideal") 1:getDTthreads() else seq(1, getDTthreads(), length.out = getDTthreads())
+    speedups <- if (type == "Ideal") seq(1, getDTthreads()) else seq(1, getDTthreads() / 2, length.out = getDTthreads())
+    data.table(expr = expr, threadCount = threadCounts, speedup = speedups, type = type)
+  }
+  
+  functions <- unique(x$expr)
+  idealSpeedup <- rbindlist(lapply(functions, speedupData, type = "Ideal"))
+  recommendedSpeedup <- rbindlist(lapply(functions, speedupData, type = "Recommended"))
+  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
+  
   combinedLineData <- rbindlist(list(idealSpeedup, recommendedSpeedup, x), use.names = TRUE, fill = TRUE)
-
+  
   closestPoints <- x[, {
     recommendedSpeedupSubset <- recommendedSpeedup[expr == .BY$expr]
     .SD[.(threadCount = recommendedSpeedupSubset$threadCount), on = .(threadCount), nomatch = 0L]
     .SD[which.max(speedup - recommendedSpeedupSubset$speedup)]
   }, by = expr]
-
-  closestPoints[, `:=`(
-    type = "Recommended"
-  )]
-
+  
+  closestPoints[, `:=`(type = "Recommended")]
+  
   combinedPointData <- rbindlist(list(maxSpeedup, closestPoints), use.names = TRUE, fill = TRUE)
-
-  x[, `:=`(
-    minSpeedup = min(speedup),
-    maxSpeedup = max(speedup)
-  ), by = expr]
-
+  
+  x[, `:=`(minSpeedup = min(speedup), maxSpeedup = max(speedup)), by = expr]
+  
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = combinedLineData, aes(color = type), size = 1) +
     geom_point(data = combinedPointData, aes(color = type), size = 3) +
