@@ -26,13 +26,19 @@ plot.data_table_threads_benchmark <- function(x, ...)
   x[, `:=`(speedup = medianTime[threadCount == 1] / medianTime, type = "Measured"), by = expr]
 
   systemThreadCount <- getDTthreads()
+  functions <- unique(x$expr)
 
-  speedupData <- data.table(expr = unique(x$expr))
-  speedupData <- speedupData[, .(
-    threadCount = c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)),
-    speedup = c(seq(1, systemThreadCount), seq(1, systemThreadCount / 2, length.out = systemThreadCount)),
-    type = rep(c("Ideal", "Recommended"), each = systemThreadCount)
-  ), by = expr]
+  speedupData <- data.table(
+    expr = rep(functions, each = systemThreadCount),
+    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount / 2, length.out = systemThreadCount), length(functions))),
+    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
+  )
+
+  for(col in setdiff(names(x), names(speedupData))) 
+  {
+    speedupData[, (col) := NA]
+  }
 
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
 
@@ -46,7 +52,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   closestPoints[, `:=`(type = "Recommended")]
 
-  combinedPointData <- rbind(maxSpeedup, closestPoints)
+  combinedPointData <- rbind(maxSpeedup, closestPoints, use.names = TRUE, fill = TRUE)
 
   x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
 
