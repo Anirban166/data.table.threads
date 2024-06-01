@@ -36,7 +36,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
 
-  combinedLineData <- rbindlist(list(speedupData, x), use.names = TRUE, fill = TRUE)
+  combinedLineData <- rbind(speedupData, x, use.names = TRUE, fill = TRUE)
 
   closestPoints <- x[, {
     recommendedSpeedupSubset <- speedupData[expr == .BY$expr & type == "Recommended"]
@@ -46,7 +46,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   closestPoints[, `:=`(type = "Recommended")]
 
-  combinedPointData <- rbindlist(list(maxSpeedup, closestPoints), use.names = TRUE, fill = TRUE)
+  combinedPointData <- rbind(maxSpeedup, closestPoints)
 
   x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
 
