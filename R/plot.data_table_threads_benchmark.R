@@ -42,15 +42,14 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
 
-  combinedLineData <- rbind(speedupData, x, use.names = TRUE, fill = TRUE)
-
   closestPoints <- x[, {
     recommendedSpeedupSubset <- speedupData[expr == .BY$expr & type == "Recommended"]
     merged <- .SD[recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
     .SD[which.max(speedup - merged$speedup)]
   }, by = expr][, type := "Recommended"]
 
-  combinedPointData <- rbind(maxSpeedup, closestPoints, use.names = TRUE, fill = TRUE)
+  combinedLineData <- rbind(speedupData, x, fill = TRUE)
+  combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
 
   x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
 
