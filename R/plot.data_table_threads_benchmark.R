@@ -35,11 +35,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
 
-  for(col in setdiff(names(x), names(speedupData))) 
-  {
-    speedupData[, (col) := NA]
-  }
-
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
 
   closestPoints <- x[, {
