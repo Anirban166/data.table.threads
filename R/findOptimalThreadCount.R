@@ -36,7 +36,7 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = TRU
   }
 
   results.dt <- rbindlist(results)
-  results.dt <- results.dt[, .(threadCount, expr, minTime = min, maxTime = max, medianTime = median)]
-  setattr(results.dt, "class", c("data_table_threads_benchmark", class(results.dt)))
-  (results.dt)
+  seconds.dt <- results.dt[, .(threadCount, expr, min, max, median)]
+  setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
+  return(seconds.dt)
 }
