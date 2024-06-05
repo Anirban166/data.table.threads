@@ -23,7 +23,7 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  x[, `:=`(speedup = medianTime[threadCount == 1] / medianTime, type = "Measured"), by = expr]
+  x[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
 
   systemThreadCount <- getDTthreads()
   functions <- unique(x$expr)
@@ -43,7 +43,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
     .SD[which.max(speedup - merged$speedup)]
   }, by = expr][, type := "Recommended"]
 
-  # Using fill = TRUE for missing columns minTime, maxTime, and medianTime in speedupData and maxSpeedup:
+  # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, x, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
 

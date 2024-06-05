@@ -20,8 +20,8 @@
 
 print.data_table_threads_benchmark <- function(x, ...)
 {
-  fastestMedianTime <- x[, .(medianTime = min(medianTime)), by = expr]
-  bestPerformingThreadCount <- x[fastestMedianTime, on = .(expr, medianTime), .(expr, threadCount, medianTime)]
+  fastestMedianTime <- x[, .(median = min(median)), by = expr]
+  bestPerformingThreadCount <- x[fastestMedianTime, on = .(expr, median), .(expr, threadCount, median)]
   results <- bestPerformingThreadCount
 
   cat(sprintf("%-20s %-23s %-12s\n", "data.table function", "Fastest runtime (median)", "Thread count"))
@@ -29,6 +29,6 @@ print.data_table_threads_benchmark <- function(x, ...)
 
   for (i in seq_len(nrow(results)))
   {
-    cat(sprintf("%-20s %-23f %-12d\n", results$expr[i], results$medianTime[i], results$threadCount[i]))
+    cat(sprintf("%-20s %-23f %-12d\n", results$expr[i], results$median[i], results$threadCount[i]))
   }
 }
