@@ -1,6 +1,6 @@
 Package: data.table.threads
 Title: Analyze multithreading performance for data.table functions
-Version: 0.1.1
+Version: 1.0.0
 Author: Anirban Chetia <Anirban.Chetia@nau.edu>
 Maintainer: Anirban166 <Anirban.Chetia@nau.edu>
 Description: Assists in finding the optimal thread count for different data.table
