@@ -9,7 +9,7 @@ setOptimalThreadCount(benchmarkData, functionName)
 \arguments{
 \item{benchmarkData}{A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.}
 
-\item{funcName}{The name of the \code{data.table} function for which to set the optimal thread count.}
+\item{functionName}{The name of the \code{data.table} function for which to set the optimal thread count.}
 }
 \value{
 NULL.
