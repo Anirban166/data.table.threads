@@ -1,7 +1,7 @@
 # data.table.threads v1.0.0.
 
 ## New Features
-- Added new arguments `verbose` and `time` to `runBenchmarks` and `findOptimalThreadCount`, allowing users to enable/disable detailed message printing and specify the number of benchmark repetitions.
+- Added new arguments `verbose` and `times` to `runBenchmarks` and `findOptimalThreadCount`, allowing users to enable/disable detailed message printing and specify the number of benchmark repetitions.
 - S3 `plot` method constructs a more intuitive `ggplot` for `data_table_threads_benchmark` class objects.
 - Only user-facing functions are exported.
 - Examples have been updated to use namespace qualification.
