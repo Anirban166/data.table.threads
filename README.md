@@ -47,7 +47,7 @@ The output here is a table which shows the fastest runtime (median value in mill
 
 As for the generated plot, it delineates the speedup across multiple threads (from 1 to the number of threads available in your system; 10 in my case or this example) for each function.
 
-`setOptimalThreadCount` can then be used to set the thread count based on the observed results:
+`setOptimalThreadCount(benchmarkData, functionName)` can then be used to set the thread count based on the observed results for a user-specified function:
 ```r
 > setOptimalThreadCount(benchmarks, "forder")
 The number of threads that data.table operations will use has been set to 10, the thread count that achieved the best runtime for data.table::forder().
