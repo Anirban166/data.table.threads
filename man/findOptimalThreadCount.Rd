@@ -26,7 +26,7 @@ Iteratively runs benchmarks with increasing thread counts and determines the opt
 }
 \examples{
 \dontrun{
-# Finding the best performing thread count for each benchmarked data.table function with a data size of 1000 rows and 10 columns:
-optimalThreads <- data.table.threads::findOptimalThreadCount(1000, 10)
+# Finding the best performing thread count for each benchmarked data.table function with a data size of 10000000 rows and 10 columns:
+optimalThreads <- data.table.threads::findOptimalThreadCount(1e7, 10)
 }
 }
