@@ -5,6 +5,7 @@
 - S3 `plot` method constructs a more intuitive `ggplot` for `data_table_threads_benchmark` class objects.
 - Only user-facing functions are exported.
 - Examples have been updated to use namespace qualification.
+- Added a function to set the thread count for `data.table` operations based on optimal performance (in benchmarks) of a user-specified `data.table` function.
 
 ## Improvements
 - Extensively refactored my codebase to remove redundancy.
