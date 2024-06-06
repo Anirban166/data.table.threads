@@ -26,5 +26,5 @@ setOptimalThreadCount <- function(benchmarkData, functionName)
   bestThreadCount <- benchmarkData[fastestMedianTime, on = .(expr, median), threadCount]
 
   setDTthreads(bestThreadCount)
-  cat(sprintf("The number of threads that data.table will use has been set to %d, the thread count that acheived the best runtime for data.table::%s().\n", bestThreadCount, functionName))
+  cat(sprintf("The number of threads that data.table will use has been set to %d, the thread count that achieved the best runtime for data.table::%s().\n", bestThreadCount, functionName))
 }
