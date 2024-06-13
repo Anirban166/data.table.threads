@@ -26,11 +26,6 @@
 
 setThreadCount <- function(benchmarkData, functionName, type = "recommended")
 {
-  if(!"speedup" %in% colnames(benchmarkData))
-  {
-    benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
-  }
-
   if(type == "optimal")
   {
     fastestMedianTime <- benchmarkData[expr == functionName, .(median = min(median))]
@@ -38,6 +33,10 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended")
   }
   else if(type == "recommended")
   {
+    if(!"speedup" %in% colnames(benchmarkData))
+    {
+      benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
+    }
     recommendedSpeedupSubset <- benchmarkData[expr == functionName & type == "recommended"]
     merged <- benchmarkData[expr == functionName][recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
     closestPoint <- benchmarkData[expr == functionName][which.max(speedup - merged$speedup)]
