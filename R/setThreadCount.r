@@ -31,7 +31,6 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended")
              fastestMedianTime <- benchmarkData[expr == functionName, .(median = min(median))]
              bestThreadCount <- benchmarkData[expr == functionName & median == fastestMedianTime$median, threadCount]
              cat(sprintf("The number of threads that data.table will use has been set to %d, the thread count that achieved the best runtime for data.table::%s() based on the performed benchmarks.\n", bestThreadCount, functionName))
-             bestThreadCount
            },
            recommended = {
              if(!"speedup" %in% colnames(benchmarkData)) 
@@ -43,7 +42,6 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended")
              closestPoint <- benchmarkData[expr == functionName][which.max(speedup - merged$speedup)]
              recommendedThreadCount <- closestPoint$threadCount
              cat(sprintf("The number of threads that data.table will use has been set to %d, the recommended thread count for data.table::%s() based on the performed benchmarks.\n", recommendedThreadCount, functionName))
-             recommendedThreadCount
            },
            {
              stop("Invalid type specified. (Please use 'recommended' or 'optimal')")
