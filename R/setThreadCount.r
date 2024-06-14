@@ -23,7 +23,7 @@
 #' setThreadCount(benchmarkData, "nafill", "recommended")
 #' }
 
-setThreadCount <- function(benchmarkData, functionName, type = "recommended") 
+setThreadCount <- function(benchmarkData, functionName, type = "recommended")
 {
   setDTthreads(
     switch(type,
@@ -34,7 +34,7 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended")
              bestThreadCount
            },
            recommended = {
-             if (!"speedup" %in% colnames(benchmarkData)) 
+             if(!"speedup" %in% colnames(benchmarkData)) 
              {
                benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
              }
