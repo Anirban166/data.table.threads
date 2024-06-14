@@ -3,6 +3,8 @@
 #' @param benchmarkData A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
 #' @param funcName The name of the \code{data.table} function for which to set the thread count.
+#' 
+#' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
 #' @return NULL.
 #'
@@ -23,14 +25,17 @@
 #' setThreadCount(benchmarkData, "nafill", "recommended")
 #' }
 
-setThreadCount <- function(benchmarkData, functionName, type = "recommended")
+setThreadCount <- function(benchmarkData, functionName, type = "recommended", verbose = FALSE)
 {
   setDTthreads(
     if(type == "optimal")
     {
       fastestMedianTime <- benchmarkData[expr == functionName, .(median = min(median))]
       bestThreadCount <- benchmarkData[expr == functionName & median == fastestMedianTime$median, threadCount]
-      cat(sprintf("The number of threads that data.table will use has been set to %d, the thread count that achieved the best runtime for data.table::%s() based on the performed benchmarks.\n", bestThreadCount, functionName))
+      if(verbose) 
+      {
+        message("The number of threads that data.table will use has been set to ", bestThreadCount, ", the thread count that achieved the best runtime for data.table::", functionName, "() based on the performed benchmarks.")
+      }
       bestThreadCount
     }
     else if(type == "recommended")
@@ -43,7 +48,10 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended")
       merged <- benchmarkData[expr == functionName][recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
       closestPoint <- benchmarkData[expr == functionName][which.max(speedup - merged$speedup)]
       recommendedThreadCount <- closestPoint$threadCount
-      cat(sprintf("The number of threads that data.table will use has been set to %d, the recommended thread count for data.table::%s() based on the performed benchmarks.\n", recommendedThreadCount, functionName))
+      if(verbose)
+      {
+        message("The number of threads that data.table will use has been set to ", recommendedThreadCount, ", the recommended thread count for data.table::", functionName, "() based on the performed benchmarks.")
+      }
       recommendedThreadCount
     }
     else
