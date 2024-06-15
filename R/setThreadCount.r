@@ -34,7 +34,7 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended", ve
       bestThreadCount <- benchmarkData[expr == functionName & median == fastestMedianTime$median, threadCount]
       if(verbose) 
       {
-        message("The number of threads that data.table will use has been set to ", bestThreadCount, ", the thread count that achieved the best runtime for data.table::", functionName, "() based on the performed benchmarks.")
+        message(sprintf("The number of threads that data.table will use has been set to %d, the thread count that achieved the best runtime for data.table::%s() based on the performed benchmarks.\n", bestThreadCount, functionName))
       }
       bestThreadCount
     }
@@ -50,7 +50,7 @@ setThreadCount <- function(benchmarkData, functionName, type = "recommended", ve
       recommendedThreadCount <- closestPoint$threadCount
       if(verbose)
       {
-        message("The number of threads that data.table will use has been set to ", recommendedThreadCount, ", the recommended thread count for data.table::", functionName, "() based on the performed benchmarks.")
+        message(sprintf("The number of threads that data.table will use has been set to %d, the recommended thread count for data.table::%s() based on the performed benchmarks.\n", recommendedThreadCount, functionName))
       }
       recommendedThreadCount
     }
