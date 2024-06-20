@@ -25,6 +25,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 {
   x[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
 
+  setDTthreads(0)
   systemThreadCount <- getDTthreads()
   functions <- unique(x$expr)
 
