@@ -22,6 +22,7 @@
 #' benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
 #' # Setting the optimal thread count for the 'forder' function:
 #' setThreadCount(benchmarkData, "forder", efficiencyFactor = 0)
+#' # Can verify by checking benchmarkData and getDTthreads():
 #' getDTthreads()
 #' # Setting the recommended thread count for the 'nafill' function:
 #' setThreadCount(benchmarkData, "nafill", efficiencyFactor = 0.5)
