@@ -7,12 +7,14 @@
 setThreadCount(
   benchmarkData,
   functionName,
-  type = "recommended",
+  efficiencyFactor = 0.5,
   verbose = FALSE
 )
 }
 \arguments{
 \item{benchmarkData}{A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.}
+
+\item{efficiencyFactor}{A numeric value between 0 and 1 indicating the desired efficiency level for thread count selection. 0 represents use of the optimal thread count (lowest median runtime) and 0.5 represents the recommended thread count.}
 
 \item{verbose}{Option (logical) to enable or disable detailed message printing.}
 
@@ -32,10 +34,10 @@ Sets the thread count to either the optimal (fastest median runtime) or recommen
 # Finding the best performing thread count for each benchmarked data.table function with a data size of 10000000 rows and 10 columns:
 benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
 # Setting the optimal thread count for the 'forder' function:
-setThreadCount(benchmarkData, "forder", "optimal")
+setThreadCount(benchmarkData, "forder", efficiencyFactor = 0)
 getDTthreads()
 # Setting the recommended thread count for the 'nafill' function:
-setThreadCount(benchmarkData, "nafill", "recommended")
+setThreadCount(benchmarkData, "nafill", efficiencyFactor = 0.5)
 getDTthreads()
 }
 }

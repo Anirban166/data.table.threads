@@ -3,8 +3,10 @@
 #' @param benchmarkData A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
 #' @param funcName The name of the \code{data.table} function for which to set the thread count.
-#' 
+#'
 #' @param verbose Option (logical) to enable or disable detailed message printing.
+#'
+#' @param efficiencyFactor A numeric value between 0 and 1 indicating the desired efficiency level for thread count selection. 0 represents use of the optimal thread count (lowest median runtime) and 0.5 represents the recommended thread count.
 #'
 #' @return NULL.
 #'
@@ -19,44 +21,45 @@
 #' # Finding the best performing thread count for each benchmarked data.table function with a data size of 10000000 rows and 10 columns:
 #' benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
 #' # Setting the optimal thread count for the 'forder' function:
-#' setThreadCount(benchmarkData, "forder", "optimal")
-#' # Can verify by checking benchmarkData and getDTthreads()
+#' setThreadCount(benchmarkData, "forder", efficiencyFactor = 0)
+#' getDTthreads()
 #' # Setting the recommended thread count for the 'nafill' function:
-#' setThreadCount(benchmarkData, "nafill", "recommended")
+#' setThreadCount(benchmarkData, "nafill", efficiencyFactor = 0.5)
+#' getDTthreads()
 #' }
 
-setThreadCount <- function(benchmarkData, functionName, type = "recommended", verbose = FALSE)
+setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, verbose = FALSE)
 {
+  if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1) {
+    stop("Invalid efficiencyFactor specified. (Please use 0.5 for recommended thread count or 0 for optimal thread count!)")
+  }
+
   setDTthreads(
-    if(type == "optimal")
+    if(efficiencyFactor == 0)
     {
       fastestMedianTime <- benchmarkData[expr == functionName, .(median = min(median))]
       bestThreadCount <- benchmarkData[expr == functionName & median == fastestMedianTime$median, threadCount]
-      if(verbose) 
+      if(verbose)
       {
-        message(sprintf("The number of threads that data.table will use has been set to %d, the thread count that achieved the best runtime for data.table::%s() based on the performed benchmarks.\n", bestThreadCount, functionName))
+        message("The number of threads that data.table will use has been set to ", bestThreadCount, ", the thread count that achieved the best runtime for data.table::", functionName, "() based on the performed benchmarks.")
       }
       bestThreadCount
     }
-    else if(type == "recommended")
+    else if(efficiencyFactor == 0.5)
     {
       if(!"speedup" %in% colnames(benchmarkData))
       {
         benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
       }
-      recommendedSpeedupSubset <- benchmarkData[expr == functionName & type == "recommended"]
-      merged <- benchmarkData[expr == functionName][recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
-      closestPoint <- benchmarkData[expr == functionName][which.max(speedup - merged$speedup)]
-      recommendedThreadCount <- closestPoint$threadCount
+      maxSpeedup <- max(benchmarkData[expr == functionName]$speedup)
+      targetSpeedup <- efficiencyFactor * maxSpeedup
+      benchmarkData[, diff := abs(speedup - targetSpeedup), by = expr]
+      recommendedThreadCount <- benchmarkData[expr == functionName][order(diff)][1, threadCount]
       if(verbose)
       {
-        message(sprintf("The number of threads that data.table will use has been set to %d, the recommended thread count for data.table::%s() based on the performed benchmarks.\n", recommendedThreadCount, functionName))
+        message("The number of threads that data.table will use has been set to ", recommendedThreadCount, ", based on an efficiency factor of ", efficiencyFactor, " for data.table::", functionName, "() based on the performed benchmarks.")
       }
       recommendedThreadCount
-    }
-    else
-    {
-      stop("Invalid type specified. (Please use 'recommended' or 'optimal')")
     }
   )
 }
