@@ -31,8 +31,9 @@
 
 setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, verbose = FALSE)
 {
-  if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1) {
-    stop("Invalid efficiencyFactor specified. (Please use 0.5 for recommended thread count or 0 for optimal thread count!)")
+  if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1) 
+  {
+    stop("Invalid efficiencyFactor specified. (Please use 0.5 for recommended or 0 for optimal thread count!)")
   }
 
   setDTthreads(
