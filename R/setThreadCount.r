@@ -29,39 +29,27 @@
 #' getDTthreads()
 #' }
 
-setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, verbose = FALSE)
+setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, verbose = FALSE) 
 {
-  if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1)
+  if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1) 
   {
     stop("Invalid efficiencyFactor specified. Please use a value between 0 and 1 (inclusive).")
   }
 
-  setDTthreads(
-    if(efficiencyFactor == 0)
-    {
-      fastestMedianTime <- benchmarkData[expr == functionName, .(median = min(median))]
-      bestThreadCount <- benchmarkData[expr == functionName & median == fastestMedianTime$median, threadCount]
-      if(verbose)
-      {
-        message("The number of threads that data.table will use has been set to ", bestThreadCount, ", the thread count that achieved the best runtime for data.table::", functionName, "() based on the performed benchmarks.")
-      }
-      bestThreadCount
-    }
-    else
-    {
-      if(!"speedup" %in% colnames(benchmarkData))
-      {
-        benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
-      }
-      maxSpeedup <- max(benchmarkData[expr == functionName]$speedup)
-      targetSpeedup <- efficiencyFactor * maxSpeedup
-      benchmarkData[, diff := abs(speedup - targetSpeedup), by = expr]
-      recommendedThreadCount <- benchmarkData[expr == functionName][order(diff)][1, threadCount]
-      if(verbose)
-      {
-        message("The number of threads that data.table will use has been set to ", recommendedThreadCount, ", based on an efficiency factor of ", efficiencyFactor, " for data.table::", functionName, "() based on the performed benchmarks.")
-      }
-      recommendedThreadCount
-    }
-  )
+  if(!"speedup" %in% colnames(benchmarkData)) 
+  {
+    benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
+  }
+
+  maxSpeedup <- max(benchmarkData[expr == functionName]$speedup)
+  targetSpeedup <- efficiencyFactor * maxSpeedup
+  benchmarkData[, diff := abs(speedup - targetSpeedup), by = expr]
+  recommendedThreadCount <- benchmarkData[expr == functionName][order(diff)][1, threadCount]
+
+  if(verbose) 
+  {
+    message("The number of threads that data.table will use has been set to ", recommendedThreadCount, ", based on an efficiency factor of ", efficiencyFactor, " for data.table::", functionName, "() based on the performed benchmarks.")
+  }
+
+  setDTthreads(recommendedThreadCount)
 }
