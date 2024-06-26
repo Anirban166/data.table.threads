@@ -46,3 +46,11 @@ The output here is a table which shows the fastest runtime (median value in mill
 <img width="100%" alt="plot image" src="https://github.com/Rdatatable/data.table/assets/30123691/60496573-e52b-4085-8bc6-eddf809b0699"> <br>
 
 As for the generated plot, it delineates the speedup across multiple threads (from 1 to the number of threads available in your system; 10 in my case or this example) for each function.
+
+`setThreadCount(benchmarkData, functionName, efficiencyFactor)` can then be used to set the thread count based on the observed results for a user-specified function and efficiency value (of the range [0, 1]) for the speedup:
+```r
+> setOptimalThreadCount(benchmarks, "forder", 0, verbose = TRUE)
+The number of threads that data.table will use has been set to 10, the optimal thread count for data.table::forder() based on the performed benchmarks.
+> getDTthreads()
+[1] 10
+```
