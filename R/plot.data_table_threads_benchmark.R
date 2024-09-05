@@ -54,7 +54,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     geom_line(data = combinedLineData, aes(color = type), size = 1) +
     geom_point(data = combinedPointData, aes(color = type), size = 3) +
     geom_text(data = combinedPointData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
-    geom_ribbon(aes(ymin = minSpeedup, ymax = maxSpeedup), alpha = 0.5) +
     facet_wrap(. ~ expr) +
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
