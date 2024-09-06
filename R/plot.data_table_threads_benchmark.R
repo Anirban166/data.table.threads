@@ -38,12 +38,18 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
 
+  subOptimalSpeedupData <- data.table(
+    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
+    speedup = seq(1, systemThreadCount / 2, length.out = systemThreadCount),
+    type = "Sub-optimal"
+  )
+  
   closestPoints <- x[, {
-    recommendedSpeedupSubset <- speedupData[expr == .BY$expr & type == "Recommended"]
-    merged <- .SD[recommendedSpeedupSubset, on = .(threadCount), nomatch = 0L]
-    .SD[which.max(speedup - merged$speedup)]
-  }, by = expr][, type := "Recommended"]
-
+    suboptimalSubset <- subOptimalSpeedupData[threadCount %in% .SD$threadCount]
+    .SD[which.max(speedup - suboptimalSubset$speedup)]
+  }, by = expr]
+  closestPoints[, type := "Recommended"]
+  
   # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, x, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
