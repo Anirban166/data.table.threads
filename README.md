@@ -23,7 +23,7 @@ Running benchmarks with 1 thread, 10000000 rows, and 10 columns.
 ...
 Running benchmarks with 10 threads, 10000000 rows, and 10 columns.
 ```
-It returns an object with a class for which the print and plot methods have overridden definitions.
+It returns an object with print and plot methods.
 ```r
 > benchmarkData
 data.table function  Thread count Fastest median runtime (ms)
