@@ -46,7 +46,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
   
   closestPoints <- x[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
-    .SD[.SD$speedup > recommendedSubset$speedup][which.max(speedup)]
+    .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
   }, by = expr]
   closestPoints[, type := "Recommended"]
   
