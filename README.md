@@ -28,29 +28,29 @@ It returns an object with print and plot methods.
 > benchmarkData
 data.table function  Thread count Fastest median runtime (ms)
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-forder               10           85.401606              
-GForce_sum           4            15.679425              
-subsetting           6            53.844172              
-frollmean            4            23.674446              
-fcoalesce            7            7.365671               
-between              5            22.730892              
-fifelse              5            18.569536              
-nafill               6            7.119630               
-CJ                   2            3.403226        
+forder               8            82.736011              
+GForce_sum           6            15.670897              
+subsetting           6            54.386931              
+frollmean            6            23.329410              
+fcoalesce            5            7.319135               
+between              6            22.716911              
+fifelse              10           18.825437              
+nafill               10           7.006490               
+CJ                   1            3.194330        
 ```
 The output here is a table which shows the fastest runtime (median value in milliseconds) for each `data.table` function along with the corresponding thread count that achieved it. 
 
 ```r
 > plot(benchmarkData)
 ```
-<img width="100%" alt="plot image" src="https://github.com/Rdatatable/data.table/assets/30123691/60496573-e52b-4085-8bc6-eddf809b0699"> <br>
+<img width="100%" alt="plot image" src="https://github.com/user-attachments/assets/dbb41dab-47ae-4132-8df6-59a23571cff3"> <br>
 
 As for the generated plot, it delineates the speedup across multiple threads (from 1 to the number of threads available in your system; 10 in my case or this example) for each function.
 
 `setThreadCount(benchmarkData, functionName, efficiencyFactor)` can then be used to set the thread count based on the observed results for a user-specified function and efficiency value (of the range [0, 1]) for the speedup:
 ```r
 > setOptimalThreadCount(benchmarks, functionName = "forder", efficientcyFactor = 0.5, verbose = TRUE)
-The number of threads that data.table will use has been set to 2, based on an efficiency factor of 0.5 for data.table::forder() based on the performed benchmarks.
+The number of threads that data.table will use has been set to 3, based on an efficiency factor of 0.5 for data.table::forder() based on the performed benchmarks.
 > getDTthreads()
-[1] 2
+[1] 3
 ```
