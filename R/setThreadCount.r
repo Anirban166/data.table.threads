@@ -2,7 +2,7 @@
 #'
 #' @param benchmarkData A \code{data.table} of class \code{data_table_threads_benchmark} containing benchmarked timings with corresponding thread counts.
 #'
-#' @param funcName The name of the \code{data.table} function for which to set the thread count.
+#' @param functionName The name of the \code{data.table} function for which to set the thread count.
 #'
 #' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
