@@ -12,7 +12,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Finding the best performing thread count for each benchmarked data.table function with a data size of 10000000 rows and 10 columns:
+#' # Finding the best performing thread count for each benchmarked data.table function
+#' # with a data size of 10000000 rows and 10 columns:
 #' benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
 #' # Printing the data:
 #' benchmarkData

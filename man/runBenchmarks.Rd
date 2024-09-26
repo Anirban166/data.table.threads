@@ -28,7 +28,9 @@ Benchmarks various \code{data.table} functions that are parallelizable (\code{se
 }
 \examples{
 \dontrun{
-# Running a set of benchmarks for a data.table with 10000000 rows and 10 columns, for thread counts going from 1 to the maximum number of available threads in the user's system:
+# Running a set of benchmarks for a data.table with 10000000 rows and 10 columns, 
+# for thread counts going from 1 to the maximum number of available threads in 
+# the user's system:
 benchmarkData <- data.table.threads::runBenchmarks(1e7, 10, getDTthreads())
 }
 }
