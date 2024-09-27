@@ -10,6 +10,8 @@
 #'
 #' @export
 #'
+#' @importFrom stats median
+#'
 #' @examples
 #' \dontrun{
 #' # Finding the best performing thread count for each benchmarked data.table function
