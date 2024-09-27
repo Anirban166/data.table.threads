@@ -24,7 +24,6 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  utils::globalVariables(c("threadCount", "speedup", "type", "."))
   x[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
 
   setDTthreads(0)

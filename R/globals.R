@@ -1,0 +1,1 @@
+utils::globalVariables(c("V1", "speedup", "threadCount", "type", "."))

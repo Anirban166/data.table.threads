@@ -29,7 +29,6 @@
 
 runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose = TRUE)
 {
-  utils::globalVariables(c("V1", "CJ"))
   setDTthreads(threadCount)
   dt <- data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
 

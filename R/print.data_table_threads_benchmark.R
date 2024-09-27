@@ -23,7 +23,6 @@
 
 print.data_table_threads_benchmark <- function(x, ...)
 {
-  utils::globalVariables(c("threadCount", "median", "."))
   fastestMedianTime <- x[, .(median = min(median)), by = expr]
   bestPerformingThreadCount <- x[fastestMedianTime, on = .(expr, median), .(expr, threadCount, median)]
   results <- bestPerformingThreadCount
