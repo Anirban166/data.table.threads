@@ -34,9 +34,14 @@ setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, 
 {
   if(!is.numeric(efficiencyFactor) || efficiencyFactor < 0 || efficiencyFactor > 1)
   {
-    stop("Invalid efficiencyFactor specified. Please use a value between 0 and 1 (inclusive).")
+    stop("Invalid efficiency factor. Please use a value between 0 and 1 (inclusive).")
   }
 
+  if(!functionName %in% benchmarkData$expr)
+  {
+    stop("The specified function does not exist in data.table or is not supported here.")
+  }  
+  
   if(!"speedup" %in% colnames(benchmarkData))
   {
     benchmarkData[, speedup := median[threadCount == 1] / median, by = expr]
