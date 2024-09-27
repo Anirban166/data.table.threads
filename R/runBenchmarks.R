@@ -16,6 +16,8 @@
 #'
 #' @import data.table
 #' @import microbenchmark
+#' 
+#' @importFrom stats runif
 #'
 #' @examples
 #' \dontrun{
