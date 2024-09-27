@@ -28,6 +28,7 @@
 
 findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = TRUE)
 {
+  utils::globalVariables(".")
   setDTthreads(0)
   maxThreads <- getDTthreads()
   results <- list()
