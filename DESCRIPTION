@@ -1,8 +1,10 @@
 Package: data.table.threads
-Title: Analyze Multi-threading Performance for Data.table Functions
+Title: Analyze Multi-Threading Performance for Data.table Functions
 Version: 1.0.0
-Author: Anirban Chetia <ac4743@nau.edu>
-Maintainer: Anirban Chetia <ac4743@nau.edu>
+Authors@R: person(given = "Anirban",
+                  family = "Chetia",
+                  role = c("aut", "cre"),
+                  email = "ac4743@nau.edu")
 Description: Assists in finding the most suitable thread count for the various
              data.table routines that support parallel processing.
 License: MIT + file LICENSE
@@ -13,7 +15,3 @@ URL: https://github.com/Anirban166/data.table.threads
 Imports: ggplot2,
          data.table,
          microbenchmark
-Authors@R: person(given = "Anirban",
-                  family = "Chetia",
-                  role = c("aut", "cre"),
-                  email = "ac4743@nau.edu")
