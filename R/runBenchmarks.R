@@ -18,14 +18,6 @@
 #' @import microbenchmark
 #' 
 #' @importFrom stats runif
-#'
-#' @examples
-#' \dontrun{
-#' # Running a set of benchmarks for a data.table with 10000000 rows and 10 columns, 
-#' # for thread counts going from 1 to the maximum number of available threads in 
-#' # the user's system:
-#' benchmarkData <- data.table.threads::runBenchmarks(1e7, 10, getDTthreads())
-#' }
 
 runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose = TRUE)
 {

@@ -26,11 +26,3 @@ Function to run a set of predefined benchmarks for different \code{data.table} f
 \details{
 Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
 }
-\examples{
-\dontrun{
-# Running a set of benchmarks for a data.table with 10000000 rows and 10 columns, 
-# for thread counts going from 1 to the maximum number of available threads in 
-# the user's system:
-benchmarkData <- data.table.threads::runBenchmarks(1e7, 10, getDTthreads())
-}
-}
