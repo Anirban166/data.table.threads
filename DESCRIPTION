@@ -1,12 +1,12 @@
 Package: data.table.threads
-Title: Analyze Multi-Threading Performance for Data.table Functions
+Title: Analyze Multi-Threading Performance for 'data.table' Functions
 Version: 1.0.0
 Authors@R: person(given = "Anirban",
                   family = "Chetia",
                   role = c("aut", "cre"),
                   email = "ac4743@nau.edu")
 Description: Assists in finding the most suitable thread count for the various
-             data.table routines that support parallel processing.
+             'data.table' routines that support parallel processing.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
