@@ -20,11 +20,9 @@
 #' @import microbenchmark
 #'
 #' @examples
-#' \donttest{
 #' # Finding the best performing thread count for each benchmarked data.table function
-#' # with a data size of 10000000 rows and 10 columns:
-#' optimalThreads <- data.table.threads::findOptimalThreadCount(1e7, 10)
-#' }
+#' # with a data size of 1000 rows and 10 columns:
+#' (optimalThreads <- data.table.threads::findOptimalThreadCount(1e3, 10, verbose = FALSE))
 
 findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = TRUE)
 {
