@@ -30,16 +30,11 @@ Function to set the thread count for a specific \code{data.table} function
 Sets the thread count to either the optimal (fastest median runtime) or recommended value (default) based on the chosen type argument for the specified \code{data.table} function based on the results obtained from \code{findOptimalThreadCount()}.
 }
 \examples{
-\dontrun{
 # Finding the best performing thread count for each benchmarked data.table function
-# with a data size of 10000000 rows and 10 columns:
-benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
+# with a data size of 1000 rows and 10 columns:
+benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10)
 # Setting the optimal thread count for the 'forder' function:
-setThreadCount(benchmarkData, "forder", efficiencyFactor = 0)
+setThreadCount(benchmarkData, "forder", efficiencyFactor = 1)
 # Can verify by checking benchmarkData and getDTthreads():
 getDTthreads()
-# Setting the recommended thread count for the 'nafill' function:
-setThreadCount(benchmarkData, "nafill", efficiencyFactor = 0.5)
-getDTthreads()
-}
 }

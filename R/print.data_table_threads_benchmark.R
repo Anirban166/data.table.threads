@@ -15,7 +15,7 @@
 #' @examples
 #' # Finding the best performing thread count for each benchmarked data.table function
 #' # with a data size of 1000 rows and 10 columns:
-#' (benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10, verbose = FALSE))
+#' (benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10))
 
 print.data_table_threads_benchmark <- function(x, ...)
 {

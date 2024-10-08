@@ -19,7 +19,7 @@
 #' @examples
 #' # Finding the best performing thread count for each benchmarked data.table function
 #' # with a data size of 1000 rows and 10 columns:
-#' benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10, verbose = FALSE)
+#' benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10)
 #' # Setting the optimal thread count for the 'forder' function:
 #' setThreadCount(benchmarkData, "forder", efficiencyFactor = 1)
 #' # Can verify by checking benchmarkData and getDTthreads():

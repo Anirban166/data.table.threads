@@ -21,11 +21,9 @@ Function to make speedup plots for the benchmarked \code{data.table} functions
 Creates a comprehensive \code{ggplot} showing the ideal, sub-optimal, and measured speedup trends for the \code{data.table} functions benchmarked with varying thread counts.
 }
 \examples{
-\dontrun{
 # Finding the best performing thread count for each benchmarked data.table function
-# with a data size of 10000000 rows and 10 columns:
-benchmarkData <- data.table.threads::findOptimalThreadCount(1e7, 10)
+# with a data size of 1000 rows and 10 columns:
+benchmarkData <- data.table.threads::findOptimalThreadCount(1e3, 10)
 # Generating speedup plots based on the data collected above:
 plot(benchmarkData)
-}
 }
