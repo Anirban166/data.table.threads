@@ -23,7 +23,7 @@
 #' # Setting the optimal thread count for the 'forder' function:
 #' setThreadCount(benchmarkData, "forder", efficiencyFactor = 1)
 #' # Can verify by checking benchmarkData and getDTthreads():
-#' getDTthreads()
+#' data.table::getDTthreads()
 
 setThreadCount <- function(benchmarkData, functionName, efficiencyFactor = 0.5, verbose = FALSE)
 {
