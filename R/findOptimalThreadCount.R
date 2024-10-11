@@ -34,7 +34,7 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   {
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
   }
-  
+
   results.dt <- rbindlist(results)
   seconds.dt <- results.dt[, .(threadCount, expr, min, max, median)]
   functions <- unique(seconds.dt$expr)
