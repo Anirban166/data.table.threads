@@ -22,12 +22,11 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  benchmarkData <- as.data.table(x$benchmarkResults)
-  speedupTrends <- as.data.table(x$combinedLineData)
-  keyPlotPoints <- as.data.table(x$combinedPointData)
+  speedupTrends <- attr(x, "combinedLineData")
+  keyPlotPoints <- attr(x, "combinedPointData")
   systemThreadCount <- max(benchmarkData$threadCount)
   
-  benchmarkData[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
+  x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
   
   ggplot(benchmarkData, aes(x = threadCount, y = speedup)) +
     geom_line(data = speedupTrends, aes(color = type), size = 1) +
