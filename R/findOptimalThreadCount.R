@@ -24,13 +24,18 @@
 #' # with a data size of 1000 rows and 10 columns:
 #' (optimalThreads <- data.table.threads::findOptimalThreadCount(1e3, 10))
 
-findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE)
+findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE, recommendedEfficiency = 0.5)
 {
+  if(recommendedEfficiency <= 0 || recommendedEfficiency > 1)
+  {
+    stop("Recommended efficiency must be between 0 and 1.")
+  }
+
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
-  results <- list()
+  results <- vector("list", systemThreadCount)
 
-  for(threadCount in 1:systemThreadCount) 
+  for(threadCount in 1:systemThreadCount)
   {
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
   }
@@ -41,39 +46,31 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, 
                     type = "Measured"), by = expr]
 
-  # speedupData <- data.table(
-  #   expr = rep(functions, each = systemThreadCount),
-  #   threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
-  #   speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount / 2, length.out = systemThreadCount), length(functions))),
-  #   type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
-  # )
-
-  speedupData <- rbind(
-    data.table(expr = rep(functions, each = systemThreadCount),
-               threadCount = rep(1:systemThreadCount, length(functions)),
-               speedup = rep(idealSpeedup, length(functions)),
-               type = "Ideal"),
-    data.table(expr = rep(functions, each = systemThreadCount),
-               threadCount = rep(1:systemThreadCount, length(functions)),
-               speedup = rep(recommendedSpeedup, length(functions)),
-               type = "Recommended")
+  speedupData <- data.table(
+    expr = rep(functions, each = systemThreadCount * 2),
+    threadCount = rep(1:systemThreadCount, length(functions) * 2),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), 
+                rep(seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount), length(functions))),
+    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
 
   maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
                                speedup = max(speedup), 
                                type = "Ideal"), 
-                             by = expr]
+                           by = expr]
+
+  recommendedSpeedupData <- data.table(
+    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
+    speedup = seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount),
+    type = "Recommended"
+  )
 
   closestPoints <- seconds.dt[, {
-    recommendedSubset <- speedupData[type == "Recommended" & threadCount %in% .SD$threadCount]
-    validPoints <- lapply(seq_len(nrow(recommendedSubset)), function(i) {
-      recommendedSpeedupValue <- recommendedSubset$speedup[i]
-      .SD[speedup >= recommendedSpeedupValue][which.max(speedup)]
-    })
-    rbindlist(validPoints)
+    recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
+    .SD[which.max(speedup[speedup >= recommendedSubset$speedup])]
   }, by = expr]
+  closestPoints[, type := "Recommended"]
 
-  # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, seconds.dt, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
 
