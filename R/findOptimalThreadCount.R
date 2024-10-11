@@ -43,20 +43,20 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   
   speedupData <- data.table(
     expr = rep(functions, each = systemThreadCount),
-    threadCount = rep(1:systemThreadCount, length(functions)),
-    speedup = rep(seq(1, systemThreadCount), length(functions)),
-    type = "Ideal"
+    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount / 2, length.out = systemThreadCount), length(functions))),
+    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
-  
+
+  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
+                      speedup = max(speedup), 
+                      type = "Ideal"), by = expr]
+
   recommendedSpeedupData <- data.table(
     threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
     speedup = seq(1, systemThreadCount / 2, length.out = systemThreadCount),
     type = "Recommended"
   )
-  
-  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
-                               speedup = max(speedup), 
-                               type = "Ideal"), by = expr]
   
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
