@@ -1,4 +1,4 @@
-# data.table.threads v1.0.0.
+# data.table.threads v1.0.1
 
 ## New Features
 - The data used for plotting (consisting of speedup trends/lines and key points) is now accessible via attributes of the `data.table` returned by `findOptimalThreadCount`.
