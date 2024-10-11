@@ -34,11 +34,12 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   {
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
   }
-
+  
   results.dt <- rbindlist(results)
   seconds.dt <- results.dt[, .(threadCount, expr, min, max, median)]
   functions <- unique(seconds.dt$expr)
-  seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
+  seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, 
+                    type = "Measured"), by = expr]
   
   speedupData <- data.table(
     expr = rep(functions, each = systemThreadCount),
@@ -53,7 +54,9 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
     type = "Recommended"
   )
   
-  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
+  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
+                               speedup = max(speedup), 
+                               type = "Ideal"), by = expr]
   
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
@@ -68,5 +71,5 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   setattr(seconds.dt, "combinedLineData", combinedLineData)
   setattr(seconds.dt, "combinedPointData", combinedPointData)
   setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
-  seconds.dt
+  seconds.dt  
 }
