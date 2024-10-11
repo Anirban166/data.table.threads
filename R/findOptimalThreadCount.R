@@ -38,7 +38,6 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   results.dt <- rbindlist(results)
   seconds.dt <- results.dt[, .(threadCount, expr, min, max, median)]
   functions <- unique(seconds.dt$expr)
-  setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
   seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
   
   speedupData <- data.table(
@@ -66,9 +65,8 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   combinedLineData <- rbind(speedupData, seconds.dt, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
   
-  list(
-    benchmarkResults = seconds.dt,
-    combinedLineData = combinedLineData,
-    combinedPointData = combinedPointData
-  )
+  setattr(seconds.dt, "combinedLineData", combinedLineData)
+  setattr(seconds.dt, "combinedPointData", combinedPointData)
+  setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
+  seconds.dt
 }
