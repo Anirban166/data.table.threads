@@ -22,43 +22,17 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  x[, `:=`(speedup = median[threadCount == 1] / median, type = "Measured"), by = expr]
-
-  setDTthreads(0)
-  systemThreadCount <- getDTthreads()
-  functions <- unique(x$expr)
-
-  speedupData <- data.table(
-    expr = rep(functions, each = systemThreadCount),
-    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
-    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount / 2, length.out = systemThreadCount), length(functions))),
-    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
-  )
-
-  maxSpeedup <- x[, .(threadCount = threadCount[which.max(speedup)], speedup = max(speedup), type = "Ideal"), by = expr]
-
-  recommendedSpeedupData <- data.table(
-    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
-    speedup = seq(1, systemThreadCount / 2, length.out = systemThreadCount),
-    type = "Recommended"
-  )
+  benchmarkData <- x$benchmarkResults
+  speedupTrends <- x$combinedLineData
+  keyPlotPoints <- x$combinedPointData
+  systemThreadCount <- max(benchmarkData$threadCount)
   
-  closestPoints <- x[, {
-    recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
-    .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
-  }, by = expr]
-  closestPoints[, type := "Recommended"]
+  benchmarkData[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
   
-  # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
-  combinedLineData <- rbind(speedupData, x, fill = TRUE)
-  combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
-
-  x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
-
-  ggplot(x, aes(x = threadCount, y = speedup)) +
-    geom_line(data = combinedLineData, aes(color = type), size = 1) +
-    geom_point(data = combinedPointData, aes(color = type), size = 3) +
-    geom_text(data = combinedPointData, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
+  ggplot(benchmarkData, aes(x = threadCount, y = speedup)) +
+    geom_line(data = speedupTrends, aes(color = type), size = 1) +
+    geom_point(data = keyPlotPoints, aes(color = type), size = 3) +
+    geom_text(data = keyPlotPoints, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
     facet_wrap(. ~ expr) +
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
