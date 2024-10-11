@@ -24,7 +24,7 @@
 #' # with a data size of 1000 rows and 10 columns:
 #' (optimalThreads <- data.table.threads::findOptimalThreadCount(1e3, 10))
 
-findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE)
+findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE, recommendedEfficiency)
 {
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
@@ -41,23 +41,36 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, 
                     type = "Measured"), by = expr]
   
-  speedupData <- data.table(
-    expr = rep(functions, each = systemThreadCount),
-    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
-    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount / 2, length.out = systemThreadCount), length(functions))),
-    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
+  createSpeedupData <- function(type, speedupFunction) 
+  {
+    data.table(
+      expr = rep(functions, each = systemThreadCount),
+      threadCount = rep(seq(1, systemThreadCount), length(functions)),
+      speedup = rep(speedupFunction, length(functions)),
+      type = type
+    )
+  }
+
+  idealSpeedup <- seq(1, systemThreadCount)
+  recommendedSpeedup <- seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount)
+
+  speedupData <- rbind(
+    createSpeedupData("Ideal", idealSpeedup),
+    createSpeedupData("Recommended", recommendedSpeedup)
   )
 
   maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
                       speedup = max(speedup), 
                       type = "Ideal"), by = expr]
 
-  recommendedSpeedupData <- data.table(
-    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
-    speedup = seq(1, systemThreadCount / 2, length.out = systemThreadCount),
-    type = "Recommended"
-  )
+  # recommendedSpeedupData <- data.table(
+  #   threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
+  #   speedup = seq(1, systemThreadCount / 2, length.out = systemThreadCount),
+  #   type = "Recommended"
+  # )
   
+  recommendedSpeedupData <- createSpeedupData("Recommended", recommendedSpeedup)
+
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
     .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
