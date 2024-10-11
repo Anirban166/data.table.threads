@@ -26,6 +26,11 @@
 
 findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE, recommendedEfficiency = 0.5)
 {
+  if(recommendedEfficiency <= 0 || recommendedEfficiency > 1)
+  {
+    stop("Recommended efficiency must be between 0 and 1.")
+  }
+
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
   results <- list()
