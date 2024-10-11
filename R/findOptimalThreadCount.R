@@ -71,5 +71,5 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   setattr(seconds.dt, "combinedLineData", combinedLineData)
   setattr(seconds.dt, "combinedPointData", combinedPointData)
   setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
-  seconds.dt  
+  seconds.dt
 }
