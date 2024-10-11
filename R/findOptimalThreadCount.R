@@ -66,8 +66,11 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
 
   closestPoints <- seconds.dt[, {
     recommendedSubset <- speedupData[type == "Recommended" & threadCount %in% .SD$threadCount]
-    validPoints <- .SD[speedup >= recommendedSubset$speedup]
-    validPoints[validPoints[, which.max(speedup)], .SD[.SD[, .I], on = .(expr)], by = expr]
+    validPoints <- lapply(seq_len(nrow(recommendedSubset)), function(i) {
+      recommendedSpeedupValue <- recommendedSubset$speedup[i]
+      .SD[speedup >= recommendedSpeedupValue][which.max(speedup)]
+    })
+    rbindlist(validPoints)
   }, by = expr]
 
   # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
