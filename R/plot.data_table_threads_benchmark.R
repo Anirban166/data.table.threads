@@ -22,9 +22,9 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  benchmarkData <- x$benchmarkResults
-  speedupTrends <- x$combinedLineData
-  keyPlotPoints <- x$combinedPointData
+  benchmarkData <- as.data.table(x$benchmarkResults)
+  speedupTrends <- as.data.table(x$combinedLineData)
+  keyPlotPoints <- as.data.table(x$combinedPointData)
   systemThreadCount <- max(benchmarkData$threadCount)
   
   benchmarkData[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
