@@ -32,22 +32,22 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, recommendedEf
   {
     stop("Recommended efficiency must be between 0 and 1.")
   }
-  
+
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
   results <- vector("list", systemThreadCount)
-  
+
   for(threadCount in 1:systemThreadCount)
   {
     results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
   }
-  
+
   results.dt <- rbindlist(results)
   seconds.dt <- results.dt[, .(threadCount, expr, min, max, median)]
   functions <- unique(seconds.dt$expr)
-  seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, 
+  seconds.dt[, `:=`(speedup = median[threadCount == 1] / median,
                     type = "Measured"), by = expr]
-  
+
   maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)],
                                speedup = max(speedup),
                                type = "Ideal"), by = expr]
@@ -63,17 +63,17 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, recommendedEf
     speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(recommendedSpeedup, length(functions))),
     type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
-  
+
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
     .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
   }, by = expr]
   closestPoints[, type := "Recommended"]
-  
+
   # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, seconds.dt, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
-  
+
   setattr(seconds.dt, "combinedLineData", combinedLineData)
   setattr(seconds.dt, "combinedPointData", combinedPointData)
   setattr(seconds.dt, "class", c("data_table_threads_benchmark", class(seconds.dt)))
