@@ -46,28 +46,27 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
   seconds.dt[, `:=`(speedup = median[threadCount == 1] / median, 
                     type = "Measured"), by = expr]
 
+  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)],
+                               speedup = max(speedup),
+                               type = "Ideal"), by = expr]
+  recommendedSpeedup <- seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount)
+  recommendedSpeedupData <- data.table(
+    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
+    speedup = recommendedSpeedup,
+    type = "Recommended"
+  )
   speedupData <- data.table(
     expr = rep(functions, each = systemThreadCount),
     threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
-    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount), length(functions))),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(recommendedSpeedup, length(functions))),
     type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
-  )
-
-  maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
-                               speedup = max(speedup), 
-                               type = "Ideal"), by = expr]
-
-  recommendedSpeedupData <- data.table(
-    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
-    speedup = seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount),
-    type = "Recommended"
   )
 
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
     .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
   }, by = expr]
-  closestPoints[, type := "Recommended"]  
+  closestPoints[, type := "Recommended"]
 
   # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, seconds.dt, fill = TRUE)
