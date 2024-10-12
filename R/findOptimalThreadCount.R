@@ -47,17 +47,15 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
                     type = "Measured"), by = expr]
 
   speedupData <- data.table(
-    expr = rep(functions, each = systemThreadCount * 2),
-    threadCount = rep(1:systemThreadCount, length(functions) * 2),
-    speedup = c(rep(seq(1, systemThreadCount), length(functions)), 
-                rep(seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount), length(functions))),
+    expr = rep(functions, each = systemThreadCount),
+    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount), length(functions))),
     type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
 
   maxSpeedup <- seconds.dt[, .(threadCount = threadCount[which.max(speedup)], 
                                speedup = max(speedup), 
-                               type = "Ideal"), 
-                           by = expr]
+                               type = "Ideal"), by = expr]
 
   recommendedSpeedupData <- data.table(
     threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
@@ -67,10 +65,11 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
 
   closestPoints <- seconds.dt[, {
     recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
-    .SD[which.max(speedup[speedup >= recommendedSubset$speedup])]
+    .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
   }, by = expr]
-  closestPoints[, type := "Recommended"]
+  closestPoints[, type := "Recommended"]  
 
+  # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, seconds.dt, fill = TRUE)
   combinedPointData <- rbind(maxSpeedup, closestPoints, fill = TRUE)
 
