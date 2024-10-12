@@ -1,6 +1,6 @@
 Package: data.table.threads
 Title: Analyze Multi-Threading Performance for 'data.table' Functions
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: person(given = "Anirban",
                   family = "Chetia",
                   role = c("aut", "cre"),
