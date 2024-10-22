@@ -2,14 +2,16 @@
 Installation
 </h2>
 
-Use `devtools` or `remotes` to fetch the package from this repository:
+Fetch from CRAN using:
 ```r
-if(!require(devtools)) install.packages("devtools")
-devtools::install_github("Anirban166/data.table.threads")
+install.packages("data.table.threads")
+```
+or use the latest (developmental) version from here:
+```r
+if(!require(remotes)) install.packages("remotes"); remotes::install_github("Anirban166/data.table.threads")
 ```
 ```r
-if(!require(remotes)) install.packages("remotes")
-remotes::install_github("Anirban166/data.table.threads")
+if(!require(devtools)) install.packages("devtools"); devtools::install_github("Anirban166/data.table.threads")
 ```
 
 <h2 align = "center">
