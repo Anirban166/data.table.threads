@@ -24,10 +24,10 @@ plot.data_table_threads_benchmark <- function(x, ...)
 {
   speedupTrends <- attr(x, "lineData")
   keyPlotPoints <- attr(x, "pointData")
-  systemThreadCount <- max(speedupTrends$threadCount)
-  
+  systemThreadCount <- max(speedupTrends$threadCount, na.rm = TRUE)
+
   x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
-  
+
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = speedupTrends, aes(color = type), size = 1) +
     geom_point(data = keyPlotPoints, aes(color = type), size = 3) +
