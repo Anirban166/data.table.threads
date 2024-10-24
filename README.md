@@ -51,7 +51,7 @@ As for the generated plot, it delineates the speedup across multiple threads (fr
 
 `setThreadCount(benchmarkData, functionName, efficiencyFactor)` can then be used to set the thread count based on the observed results for a user-specified function and efficiency value (of the range [0, 1]) for the speedup:
 ```r
-> setOptimalThreadCount(benchmarks, functionName = "forder", efficientcyFactor = 0.5, verbose = TRUE)
+> setOptimalThreadCount(benchmarks, functionName = "forder", efficiencyFactor = 0.5, verbose = TRUE)
 The number of threads that data.table will use has been set to 3, based on an efficiency factor of 0.5 for data.table::forder() based on the performed benchmarks.
 > getDTthreads()
 [1] 3
