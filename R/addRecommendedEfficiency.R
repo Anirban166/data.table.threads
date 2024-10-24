@@ -51,8 +51,9 @@ addRecommendedEfficiency <- function(benchmarkData, recommendedEfficiency = 0.5)
   }, by = expr]
   closestPoints[, type := "Recommended"]
 
+  # Using fill = TRUE for missing columns minTime, maxTime, and median in speedupData and maxSpeedup:
   combinedLineData <- rbind(speedupData, attr(benchmarkData, "lineData"), fill = TRUE)
-  combinedPointData <- rbind(attr(benchmarkData, "pointData"), closestPoints, fill = TRUE)
+  combinedPointData <- rbind(closestPoints, attr(benchmarkData, "pointData"), fill = TRUE)
 
   setattr(benchmarkData, "lineData", combinedLineData)
   setattr(benchmarkData, "pointData", combinedPointData)
