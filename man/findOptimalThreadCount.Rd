@@ -4,13 +4,7 @@
 \alias{findOptimalThreadCount}
 \title{Function that finds the optimal (fastest) thread count for different \code{data.table} functions}
 \usage{
-findOptimalThreadCount(
-  rowCount,
-  colCount,
-  times = 10,
-  recommendedEfficiency = 0.5,
-  verbose = FALSE
-)
+findOptimalThreadCount(rowCount, colCount, times = 10, verbose = FALSE)
 }
 \arguments{
 \item{rowCount}{The number of rows in the \code{data.table}.}
@@ -18,8 +12,6 @@ findOptimalThreadCount(
 \item{colCount}{The number of columns in the \code{data.table}.}
 
 \item{times}{The number of times the benchmarks are to be run.}
-
-\item{recommendedEfficiency}{A value between 0 and 1 that defines the slope for the "Recommended" efficiency speedup line.}
 
 \item{verbose}{Option (logical) to enable or disable detailed message printing.}
 }
