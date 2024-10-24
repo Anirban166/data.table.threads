@@ -33,27 +33,25 @@ addRecommendedEfficiency <- function(benchmarkData, recommendedEfficiency = 0.5)
   recommendedSpeedup <- seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount)
 
   recommendedSpeedupData <- data.table(
-    expr = rep(functions, each = systemThreadCount),
-    threadCount = rep(seq(1, systemThreadCount), length(functions)),
-    speedup = rep(recommendedSpeedup, length(functions)),
+    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
+    speedup = recommendedSpeedup,
     type = "Recommended"
   )
 
+  speedupData <- data.table(
+    expr = rep(functions, each = systemThreadCount),
+    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
+    speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(recommendedSpeedup, length(functions))),
+    type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
+  )
+
   closestPoints <- benchmarkData[, {
-    recommendedSubset <- recommendedSpeedupData[expr == .BY$expr & threadCount %in% .SD$threadCount]
-    if(nrow(recommendedSubset) > 0) 
-    {
-      maxIndex <- which.max(.SD$speedup >= recommendedSubset$speedup)
-      if(maxIndex > 0) .SD[maxIndex] else .SD[NA_integer_]
-    } 
-    else
-    {
-      .SD[NA_integer_]
-    }
+    recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
+    .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
   }, by = expr]
   closestPoints[, type := "Recommended"]
 
-  combinedLineData <- rbind(attr(benchmarkData, "lineData"), recommendedSpeedupData, fill = TRUE)
+  combinedLineData <- rbind(speedupData, attr(benchmarkData, "lineData"), fill = TRUE)
   combinedPointData <- rbind(attr(benchmarkData, "pointData"), closestPoints, fill = TRUE)
 
   setattr(benchmarkData, "lineData", combinedLineData)
