@@ -28,18 +28,28 @@ addRecommendedEfficiency <- function(benchmarkData, recommendedEfficiency = 0.5)
     stop("Recommended efficiency must be between 0 and 1.")
   }
 
+  functions <- unique(benchmarkData$expr)
   systemThreadCount <- max(benchmarkData$threadCount)
   recommendedSpeedup <- seq(1, systemThreadCount * recommendedEfficiency, length.out = systemThreadCount)
 
   recommendedSpeedupData <- data.table(
-    threadCount = seq(1, systemThreadCount, length.out = systemThreadCount),
-    speedup = recommendedSpeedup,
+    expr = rep(functions, each = systemThreadCount),
+    threadCount = rep(seq(1, systemThreadCount), length(functions)),
+    speedup = rep(recommendedSpeedup, length(functions)),
     type = "Recommended"
   )
 
   closestPoints <- benchmarkData[, {
-    recommendedSubset <- recommendedSpeedupData[threadCount %in% .SD$threadCount]
-    .SD[.SD$speedup >= recommendedSubset$speedup][which.max(speedup)]
+    recommendedSubset <- recommendedSpeedupData[expr == .BY$expr & threadCount %in% .SD$threadCount]
+    if(nrow(recommendedSubset) > 0) 
+    {
+      maxIndex <- which.max(.SD$speedup >= recommendedSubset$speedup)
+      if(maxIndex > 0) .SD[maxIndex] else .SD[NA_integer_]
+    } 
+    else
+    {
+      .SD[NA_integer_]
+    }
   }, by = expr]
   closestPoints[, type := "Recommended"]
 
