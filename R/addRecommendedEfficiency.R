@@ -43,11 +43,10 @@ addRecommendedEfficiency <- function(benchmarkData, recommendedEfficiency = 0.5)
   }, by = expr]
   closestPoints[, type := "Recommended"]
 
-  combinedLineData <- rbind(benchmarkData$lineData, recommendedSpeedupData, fill = TRUE)
-  combinedPointData <- rbind(benchmarkData$pointData, closestPoints, fill = TRUE)
+  combinedLineData <- rbind(attr(benchmarkData, "lineData"), recommendedSpeedupData, fill = TRUE)
+  combinedPointData <- rbind(attr(benchmarkData, "pointData"), closestPoints, fill = TRUE)
 
   setattr(benchmarkData, "lineData", combinedLineData)
   setattr(benchmarkData, "pointData", combinedPointData)
-
   benchmarkData
 }
