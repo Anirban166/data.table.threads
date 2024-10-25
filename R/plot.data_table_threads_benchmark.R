@@ -36,7 +36,8 @@ plot.data_table_threads_benchmark <- function(x, ...)
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    scale_x_continuous(breaks = 1:systemThreadCount, labels = 1:systemThreadCount) +
+    scale_x_continuous(breaks = 1:systemThreadCount) +
+    scale_y_continuous(breaks = c(1, 2.5, 5, 7.5, 10)) +
     scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
     guides(color = guide_legend(title = "Type"))
 }
