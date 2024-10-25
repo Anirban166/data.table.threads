@@ -40,7 +40,7 @@ addRecommendedEfficiency <- function(benchmarkData, recommendedEfficiency = 0.5)
 
   speedupData <- data.table(
     expr = rep(functions, each = systemThreadCount),
-    threadCount = rep(c(1:systemThreadCount, seq(1, systemThreadCount, length.out = systemThreadCount)), length(functions)),
+    threadCount = rep(1:systemThreadCount, times = 2 * length(functions)),
     speedup = c(rep(seq(1, systemThreadCount), length(functions)), rep(recommendedSpeedup, length(functions))),
     type = rep(c("Ideal", "Recommended"), each = systemThreadCount * length(functions))
   )
