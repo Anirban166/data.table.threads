@@ -22,10 +22,10 @@
 
 plot.data_table_threads_benchmark <- function(x, ...)
 {
-  speedupTrends <- attr(x, "combinedLineData")
-  keyPlotPoints <- attr(x, "combinedPointData")
+  speedupTrends <- attr(x, "lineData")
+  keyPlotPoints <- attr(x, "pointData")
   systemThreadCount <- max(speedupTrends$threadCount, na.rm = TRUE)
-  
+
   x[, `:=`(minSpeedup = min(speedup, na.rm = TRUE), maxSpeedup = max(speedup, na.rm = TRUE)), by = expr]
 
   ggplot(x, aes(x = threadCount, y = speedup)) +
@@ -36,7 +36,8 @@ plot.data_table_threads_benchmark <- function(x, ...)
     coord_equal() +
     labs(x = "Threads", y = "Speedup", title = "data.table functions") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    scale_x_continuous(breaks = 1:systemThreadCount, labels = 1:systemThreadCount) +
+    scale_x_continuous(breaks = 1:systemThreadCount) +
+    scale_y_continuous(breaks = seq(1, systemThreadCount, length.out = systemThreadCount/2)) +
     scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
     guides(color = guide_legend(title = "Type"))
 }

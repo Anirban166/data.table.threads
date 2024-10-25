@@ -2,6 +2,7 @@
 
 S3method(plot,data_table_threads_benchmark)
 S3method(print,data_table_threads_benchmark)
+export(addRecommendedEfficiency)
 export(findOptimalThreadCount)
 export(setThreadCount)
 import(data.table)
