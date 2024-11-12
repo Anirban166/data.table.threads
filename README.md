@@ -25,7 +25,6 @@ Running benchmarks with 1 thread, 10000000 rows, and 10 columns.
 ...
 Running benchmarks with 10 threads, 10000000 rows, and 10 columns.
 ```
-It returns a `data.table` object for which `print` and `plot` methods have been provided.
 ```r
 > benchmarks
 data.table function  Thread count Fastest median runtime (ms)
