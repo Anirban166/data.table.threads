@@ -20,13 +20,7 @@ Usage
 
 `findOptimalThreadCount(rowCount, columnCount, ...)` is the go-to function that runs a set of predefined benchmarks for various `data.table` functions that are parallelizable, across varying thread counts (iteratively from one to the highest number available as per the user's system). It involves computation to find the optimal/ideal speedup and thread count for each function. It returns a `data.table` object of a custom class (`print` and `plot` methods have been provided), which contains the optimal thread count for each function. It also provides plot data (consisting of speedup trends and key points) as attributes.
 ```r
-> benchmarks <- data.table.threads::findOptimalThreadCount(1e7, 10, verbose = TRUE)
-Running benchmarks with 1 thread, 10000000 rows, and 10 columns.
-...
-Running benchmarks with 10 threads, 10000000 rows, and 10 columns.
-```
-```r
-> benchmarks
+> (benchmarks <- data.table.threads::findOptimalThreadCount(1e7, 10))
 data.table function  Thread count Fastest median runtime (ms)
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 forder               8            99.320183
