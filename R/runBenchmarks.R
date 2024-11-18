@@ -21,10 +21,10 @@
 #' 
 #' @importFrom stats runif
 
-runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose = TRUE, benchmarksList = NULL)
+runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose = TRUE, benchmarksList = NULL, customDT = NULL)
 {
   setDTthreads(threadCount)
-  dt <- data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
+  dt <- if(!is.null(customDT)) customDT else data.table(matrix(runif(rowCount * colCount), nrow = rowCount, ncol = colCount))
 
   threadLabel <- ifelse(threadCount == 1, "thread", "threads")
   if(verbose)
