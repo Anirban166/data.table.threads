@@ -24,7 +24,7 @@
 #' # with a data size of 1000 rows and 10 columns:
 #' (optimalThreads <- data.table.threads::findOptimalThreadCount(1e3, 10))
 
-findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE)
+findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE, benchmarksList = NULL)
 {
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
@@ -32,7 +32,7 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
 
   for(threadCount in 1:systemThreadCount)
   {
-    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
+    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose, benchmarksList)
   }
 
   results.dt <- rbindlist(results)
