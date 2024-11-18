@@ -18,7 +18,7 @@ NULL.
 Function to concisely display the results returned by \code{findOptimalThreadCount()} in an organized table
 }
 \details{
-Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked \code{data.table} function.
+Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked function.
 }
 \examples{
 # Finding the best performing thread count for each benchmarked data.table function

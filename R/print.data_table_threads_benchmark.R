@@ -6,7 +6,7 @@
 #'
 #' @return NULL.
 #'
-#' @details Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked \code{data.table} function.
+#' @details Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked function.
 #'
 #' @export
 #'
@@ -23,7 +23,7 @@ print.data_table_threads_benchmark <- function(x, ...)
   bestPerformingThreadCount <- x[fastestMedianTime, on = .(expr, median), .(expr, threadCount, median)]
   results <- bestPerformingThreadCount
 
-  cat(sprintf("%-20s %-12s %-23s\n", "data.table function", "Thread count", "Fastest median runtime (ms)"))
+  cat(sprintf("%-20s %-12s %-23s\n", "function", "Thread count", "Fastest median runtime (ms)"))
   cat(rep("-", 31), "\n")
 
   for (i in seq_len(nrow(results)))

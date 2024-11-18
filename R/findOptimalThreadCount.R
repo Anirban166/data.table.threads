@@ -10,6 +10,10 @@
 #'
 #' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
+#' @param benchmarksList A named list of custom benchmarking functions which when specified overrides the default benchmarks for each parallelizable \code{data.table} routine. Each function must accept a \code{data.table} as its first argument and return a result.
+#'
+#' @param customDT A user-specified \code{data.table} that should contain all columns required by the functions in \code{benchmarksList}. Defaults to \code{NULL}, in which case a matrix \code{data.table} is generated internally using \code{rowCount} and \code{colCount}.
+#'
 #' @return A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 #'
 #' @details Iteratively runs benchmarks with increasing thread counts and determines the optimal number of threads for each \code{data.table} function.
@@ -24,7 +28,7 @@
 #' # with a data size of 1000 rows and 10 columns:
 #' (optimalThreads <- data.table.threads::findOptimalThreadCount(1e3, 10))
 
-findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE)
+findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FALSE, benchmarksList = NULL, customDT = NULL)
 {
   setDTthreads(0)
   systemThreadCount <- getDTthreads()
@@ -32,7 +36,7 @@ findOptimalThreadCount <- function(rowCount, colCount, times = 10, verbose = FAL
 
   for(threadCount in 1:systemThreadCount)
   {
-    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose)
+    results[[threadCount]] <- runBenchmarks(rowCount, colCount, threadCount, times, verbose, benchmarksList, customDT)
   }
 
   results.dt <- rbindlist(results)

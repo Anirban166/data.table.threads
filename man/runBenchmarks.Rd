@@ -4,18 +4,30 @@
 \alias{runBenchmarks}
 \title{Function to run a set of predefined benchmarks for different \code{data.table} functions with varying thread counts}
 \usage{
-runBenchmarks(rowCount, colCount, threadCount, times = 10, verbose = TRUE)
+runBenchmarks(
+  rowCount,
+  colCount,
+  threadCount,
+  times = 10,
+  verbose = TRUE,
+  benchmarksList = NULL,
+  customDT = NULL
+)
 }
 \arguments{
-\item{rowCount}{The number of rows in the \code{data.table}.}
+\item{rowCount}{The number of rows in the \code{data.table}that runs the default benchmarks. Only needs to be specified when not using a custom \code{data.table}.}
 
-\item{colCount}{The number of columns in the \code{data.table}.}
+\item{colCount}{The number of columns in the \code{data.table} that runs the default benchmarks. Only needs to be specified when not using a custom \code{data.table}.}
 
 \item{threadCount}{The total number of threads to use.}
 
 \item{times}{The number of times the benchmarks are to be run.}
 
 \item{verbose}{Option (logical) to enable or disable detailed message printing.}
+
+\item{benchmarksList}{A named list of custom benchmarking functions which when specified overrides the default benchmarks for each parallelizable \code{data.table} routine. Each function must accept a \code{data.table} as its first argument and return a result.}
+
+\item{customDT}{A user-specified \code{data.table} that should contain all columns required by the functions in \code{benchmarksList}. Defaults to \code{NULL}, in which case a matrix \code{data.table} is generated internally using \code{rowCount} and \code{colCount}.}
 }
 \value{
 A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
