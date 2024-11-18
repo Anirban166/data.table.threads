@@ -29,7 +29,7 @@ runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose =
   threadLabel <- ifelse(threadCount == 1, "thread", "threads")
   if(verbose)
   {
-    cat(sprintf("Running benchmarks with %d %s, %d rows, and %d columns.\n", getDTthreads(), threadLabel, rowCount, colCount))
+    cat(sprintf("Running benchmarks with %d %s, %d rows, and %d columns.\n", getDTthreads(), threadLabel, nrow(dt), ncol(dt)))
   }
 
   if(is.null(benchmarksList))
