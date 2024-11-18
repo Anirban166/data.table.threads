@@ -12,6 +12,8 @@
 #'
 #' @param benchmarksList A named list of custom benchmarking functions which when specified overrides the default benchmarks for each parallelizable \code{data.table} routine. Each function must accept a \code{data.table} as its first argument and return a result.
 #'
+#' @param customDT A user-specified \code{data.table} that should contain all columns required by the functions in \code{benchmarksList}. Defaults to \code{NULL}, in which case a matrix \code{data.table} is generated internally using \code{rowCount} and \code{colCount}.
+#'
 #' @return A \code{data.table} of class \code{data_table_threads_benchmark} containing the optimal thread count for each \code{data.table} function.
 #'
 #' @details Iteratively runs benchmarks with increasing thread counts and determines the optimal number of threads for each \code{data.table} function.

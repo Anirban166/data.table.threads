@@ -6,7 +6,7 @@
 #'
 #' @return NULL.
 #'
-#' @details Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked \code{data.table} function.
+#' @details Prints a table enlisting the best performing thread count along with the runtime (median value) for each benchmarked function.
 #'
 #' @export
 #'
