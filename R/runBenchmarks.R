@@ -10,6 +10,8 @@
 #'
 #' @param verbose Option (logical) to enable or disable detailed message printing.
 #'
+#' @param benchmarksList A named list of custom benchmarking functions which when specified overrides the default benchmarks for each parallelizable \code{data.table} routine. Each function must accept a \code{data.table} as its first argument and return a result.
+#'
 #' @return A \code{data.table} containing benchmarked timings for each \code{data.table} function with different thread counts.
 #'
 #' @details Benchmarks various \code{data.table} functions that are parallelizable (\code{setorder}, \code{GForce_sum}, \code{subsetting}, \code{frollmean}, \code{fcoalesce}, \code{between}, \code{fifelse}, \code{nafill}, and \code{CJ}) with varying thread counts.
