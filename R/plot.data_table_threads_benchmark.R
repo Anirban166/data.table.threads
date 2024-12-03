@@ -30,7 +30,7 @@ plot.data_table_threads_benchmark <- function(x, ...)
 
   ggplot(x, aes(x = threadCount, y = speedup)) +
     geom_line(data = speedupTrends, aes(color = type), size = 1) +
-    geom_point(data = keyPlotPoints, aes(color = type), size = 3) +
+    geom_point(data = keyPlotPoints, aes(color = type, size = type)) +
     geom_text(data = keyPlotPoints, aes(label = threadCount), vjust = -0.5, size = 4, na.rm = TRUE) +
     facet_wrap(. ~ expr) +
     coord_equal() +
@@ -39,5 +39,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     scale_x_continuous(breaks = 1:systemThreadCount) +
     scale_y_continuous(breaks = seq(1, systemThreadCount, length.out = systemThreadCount/2)) +
     scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
+    scale_size_manual(values = c("Ideal" = 2, "Recommended" = 3)) +
     guides(color = guide_legend(title = "Type"))
 }
