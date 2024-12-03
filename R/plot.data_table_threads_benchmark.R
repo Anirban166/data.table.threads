@@ -39,6 +39,6 @@ plot.data_table_threads_benchmark <- function(x, ...)
     scale_x_continuous(breaks = 1:systemThreadCount) +
     scale_y_continuous(breaks = seq(1, systemThreadCount, length.out = systemThreadCount/2)) +
     scale_color_manual(values = c("Measured" = "black", "Ideal" = "#f79494", "Recommended" = "#93c4e0")) +
-    scale_size_manual(values = c("Ideal" = 2, "Recommended" = 3)) +
+    scale_size_manual(values = c("Ideal" = 3, "Recommended" = 4)) +
     guides(color = guide_legend(title = "Type"))
 }
