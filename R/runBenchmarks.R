@@ -36,20 +36,23 @@ runBenchmarks <- function(rowCount, colCount, threadCount, times = 10, verbose =
 
   if(is.null(benchmarksList))
   {
-    benchmarksList <- list(
-      forder = function(dt) setorder(dt, V1),
-      GForce_sum = function(dt) dt[, .(sum(V1))],
-      subsetting = function(dt) dt[dt[[1]] > 0.5, ],
-      frollmean = function(dt) frollmean(dt[[1]], 10),
-      fcoalesce = function(dt) fcoalesce(dt[[1]], dt[[2]]),
-      between = function(dt) dt[dt[[1]] %between% c(0.4, 0.6)],
-      fifelse = function(dt) fifelse(dt[[1]] > 0.5, dt[[1]], 0),
-      nafill = function(dt) nafill(dt[[1]], type = "const", fill = 0),
-      CJ = function(dt) CJ(sample(rowCount, size = min(rowCount, 5)), sample(colCount, size = min(colCount, 5)))
+    benchmarks <- microbenchmark(
+      forder = setorder(dt, V1),
+      GForce_sum = dt[, .(sum(V1))],
+      subsetting = dt[dt[[1]] > 0.5, ],
+      frollmean = frollmean(dt[[1]], 10),
+      fcoalesce = fcoalesce(dt[[1]], dt[[2]]),
+      between = dt[dt[[1]] %between% c(0.4, 0.6)],
+      fifelse = fifelse(dt[[1]] > 0.5, dt[[1]], 0),
+      nafill = nafill(dt[[1]], type = "const", fill = 0),
+      CJ = CJ(sample(rowCount, size = min(rowCount, 5)), sample(colCount, size = min(colCount, 5))),
+      times = times
     )
   }
-
-  benchmarkExpressions <- lapply(benchmarksList, function(f) substitute(f(dt), list(f = f, dt = dt)))
-  benchmarks <- do.call(microbenchmark, c(benchmarkExpressions, list(times = times)))
+  else
+  {
+    benchmarkExpressions <- setNames(lapply(benchmarksList, function(f) substitute(f(dt), list(f = f, dt = dt))), names(benchmarksList))
+    benchmarks <- do.call(microbenchmark, c(benchmarkExpressions, list(times = times)))
+  }
   data.table(threadCount, summary(benchmarks))
 }
