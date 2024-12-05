@@ -20,24 +20,24 @@ Usage
 
 `findOptimalThreadCount(rowCount, columnCount, ...)` is the go-to function that runs a set of predefined benchmarks for various `data.table` functions that are parallelizable, across varying thread counts (iteratively from one to the highest number available as per the user's system). It involves computation to find the optimal/ideal speedup and thread count for each function. It returns a `data.table` object of a custom class (`print` and `plot` methods have been provided), which contains the optimal thread count for each function. It also provides plot data (consisting of speedup trends and key points) as attributes.
 ```r
-> (benchmarks <- data.table.threads::findOptimalThreadCount(1e7, 10))
-Function             Thread count Fastest median runtime (ms)
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-forder               8            102.786918
-GForce_sum           4            15.656137
-subsetting           5            54.542259
-frollmean            5            23.541975
-fcoalesce            10           6.830682
-between              6            23.160429
-fifelse              8            19.139230
-nafill               4            7.095849
-CJ                   4            3.280164
+(benchmarks <- data.table.threads::findOptimalThreadCount(1e7, 10))
+# Function             Thread count Fastest median runtime (ms)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# forder               8            102.786918
+# GForce_sum           4            15.656137
+# subsetting           5            54.542259
+# frollmean            5            23.541975
+# fcoalesce            10           6.830682
+# between              6            23.160429
+# fifelse              8            19.139230
+# nafill               4            7.095849
+# CJ                   4            3.280164
 ```
 The output here is a table which shows the fastest runtime (median value in milliseconds) for each applicable `data.table` function along with the corresponding thread count that achieved it.
 
 Plotting this object would generate a plot that shows the ideal and measured speedup trends for each routine:
 ```r
-> plot(benchmarkData)
+plot(benchmarkData)
 ```
 <img width="100%" alt="plot image" src="https://github.com/user-attachments/assets/03f60c69-f43d-4acd-9d12-336caf12cfbb"> <br>
 
@@ -52,10 +52,10 @@ In both cases (with or without the addition of recommended efficiency), the gene
 
 `setThreadCount(benchmarks, functionName, efficiencyFactor)` can then be used to set the thread count based on the observed results for a user-specified function and efficiency value (of the range [0, 1]) for the speedup:
 ```r
-> setThreadCount(benchmarks_r, functionName = "forder", efficiencyFactor = 0.6, verbose = TRUE)
-The number of threads that data.table will use has been set to 2, based on an efficiency factor of 0.6 for data.table::forder() based on the performed benchmarks.
-> getDTthreads()
-[1] 2
+setThreadCount(benchmarks_r, functionName = "forder", efficiencyFactor = 0.6, verbose = TRUE)
+# The number of threads that data.table will use has been set to 2, based on an efficiency factor of 0.6 for data.table::forder() based on the performed benchmarks.
+getDTthreads()
+# [1] 2
 ```
 
 When using `findOptimalThreadCount()`, users can also replace the predefined benchmarks with their own expressions by providing a list of custom functions as the `benchmarksList` argument, enabling evaluation tailored to their specific use cases. On top of that, they can also specify their own `data.table` via the `customDT` argument to have the functions they define operate on it instead of the default matrix-based `data.table` that makes use of `rowCount` and `colCount`.
